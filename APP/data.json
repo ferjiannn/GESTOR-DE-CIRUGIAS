@@ -1,0 +1,190 @@
+{ 
+  "quirófanos": {
+  
+    "quirófano 1": 
+    {
+     "id": "Q0-1",
+      "estado": "disponible",
+      "equipamiento_fijo": [
+        "Mesa quirúrgica ortopédica",
+        "Luces quirúrgicas LED",
+        "Sistema de aspiración",
+        "Monitor multiparámetro"
+      ]
+    },
+ 
+   "quirófano 2": 
+    {
+      "id": "Q0-2",
+      "estado": "disponible",
+      "equipamiento_fijo": [
+        "Mesa quirúrgica ortopédica",
+        "Luces quirúrgicas LED",
+        "Sistema de aspiración",
+        "Monitor multiparámetro"
+      ]
+    }
+    },
+
+  "staff": {
+    "cirujanos": [
+    {
+      "id": "CIR-001",
+      "nombre": "Dr. Jeiser Fernández",
+      "especialidad": "Ortopedia"
+    },
+
+    {
+      "id": "CIR-002",
+      "nombre": "Dra. Valeria Montes",
+      "especialidad": "Ortopedia"
+    },
+
+    {
+      "id": "CIR-003",
+      "nombre": "Josué Fernández",
+      "especialidad": "Ayudante"
+    },
+
+    {
+      "id": "CIR-004",
+      "nombre": "Miguel Gutiérrez",
+      "especialidad": "Ayudante"
+    }
+  ],
+  
+  "anestesiologos": [ 
+    {
+      "id": "ANE-001",
+      "nombre": "Dr. Ignacio Villar",
+      "especialidad": "Anestesiólogo"
+    },
+    {
+      "id": "ANE-002",
+      "nombre": "Dra. Sofía Delgado",
+      "especialidad": "Anestesióloga"
+    }
+  ],
+
+  "enfermeros": [
+    {
+      "id": "ENF-001",
+      "nombre": "Laura Benítez",
+      "especialidad": "Enfermero"
+    },
+    {
+      "id": "ENF-002",
+      "nombre": "Marcos Herrera",
+      "especialidad": "Enfermero"
+    },
+    {
+      "id": "ENF-003",
+      "nombre": "Claudia Torres",
+      "especialidad": "Enfermero"
+    },
+    {
+      "id": "ENF-004",
+      "nombre": "Daniela Suárez",
+      "especialidad": "Enfermero"
+    }
+  ],
+
+  "equipamiento_hospital": [
+    {
+      "nombre": "Mesas quirúrgicas ortopédicas",
+      "tipo": "equipamiento_fijo",
+      "cantidad_disponible": 6
+    },
+    {
+      "nombre": "Arcos en C (fluoroscopios)",
+      "tipo": "equipamiento_fijo",
+      "cantidad_disponible": 3
+    },
+    {
+      "nombre": "Torres de artroscopía",
+      "tipo": "equipamiento_fijo",
+      "cantidad_disponible": 3
+    },
+    {
+      "nombre": "Electrobisturíes",
+      "tipo": "equipamiento_fijo",
+      "cantidad_disponible": 8
+    }
+  ],
+
+  "instrumental": [
+
+    {
+      "categoria": "Instrumental ortopedico",
+      "stock": 12,
+      "items_criticos": ["martillo_ortopedico", "broca", "sierra_circular"]
+    },
+    {
+      "categoria": "Implantes ortopedicos",
+      "stock": 18,
+      "items_criticos": ["placa_lcd", "tornillo_6mm", "clavo_femoral"]
+    },
+    {
+      "categoria": "Equipo artroscopia",
+      "stock": 4
+    },
+   
+    {
+      "categoria": "Materiales de consumo",
+      "stock": 30,
+      "items_criticos": ["suturas", "grapas", "campos_estériles"]
+    }
+  ],
+
+
+  "medicamentos": [
+    {
+      "categoria": "antibioticos",
+      "stock": 15
+    },
+    {
+      "categoria": "analgesicos",
+      "stock": 25
+    },
+    {
+      "categoria": "anestesicos",
+      "stock": 8
+    },
+    {
+      "categoria": "antiinflamatorios",
+      "stock": 20
+    },
+    {
+      "categoria": "anticoagulantes",
+      "stock": 12
+    },
+    {
+      "categoria": "antiemeticos",
+      "stock": 10
+    },
+    {
+      "categoria": "relajantes musculares",
+      "stock": 6
+    },
+    {
+      "categoria": "soluciones intravenosas",
+      "stock": 18
+    },
+    {
+      "categoria": "medicacion de soporte",
+      "stock": 20
+    }
+  ],
+  
+  "recursos_fisicos": [
+    
+    { "nombre": "Camillas", "cantidad": 4},
+    { "nombre": "Sábanas estériles", "cantidad": 20},
+    { "nombre": "Paños estériles", "cantidad": 25},
+    { "nombre": "Bombas de infusión", "cantidad": 4},
+    { "nombre": "Contenedores estériles", "cantidad": 10}
+  ],
+
+  "agenda": []
+  }
+  }
