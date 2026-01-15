@@ -170,10 +170,12 @@ recursos_solicitados = {}
 
 # Crear un input por cada recurso disponible
 for recurso, stock in recursos_actuales.items():
+
+    max_clinico = LIMITES_RECURSOS.get(recurso, stock)
     cantidad = st.number_input(
-        label=f"{recurso} (stock disponible: {stock})",
+        label=f"{recurso} (stock disponible: {stock}, max por cirugia: {max_clinico})",
         min_value=0,
-        max_value=stock,
+        max_value=min(stock, max_clinico),
         value=0,
         step=1
     )
