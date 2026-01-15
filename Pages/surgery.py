@@ -50,6 +50,29 @@ MAX_CIRUGIAS_POR_DIA = 2
 SESIONES = ["Mañana (8:00)", "Tarde (14:00)"]
 
 # ============================
+# Límites máximos por cirugía
+# ============================
+LIMITES_RECURSOS = {
+    "antibioticos": 3,
+    "analgesicos": 5,
+    "anestesicos": 1,
+    "antiinflamatorios": 2,
+    "anticoagulantes": 1,
+    "antiemeticos": 1,
+    "relajantes_musculares": 1,
+    "soluciones_intravenosas": 2,
+    "medicacion_soporte": 2,
+    "campos_esteriles": 3,
+    "panos_esteriles": 3,
+    "sabanas_esteriles": 2,
+    "suturas_grapas": 4,
+    "contenedores_esteriles": 1,
+    "sets_ortopedicos": 1,
+    "sets_artroscopia": 1,
+    "implantes_ortopedicos": 2
+}
+
+# ============================
 # Funciones auxiliares
 # ============================
 def obtener_quirofanos_disponibles(quirofanos, fecha):
