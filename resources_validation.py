@@ -128,3 +128,30 @@ def descontar_recursos(fecha_cirugia: date, recursos_solicitados=None):
 def lunes_de_la_semana(fecha: date) -> date:
     """Devuelve el lunes de la semana de una fecha"""
     return fecha - timedelta(days=fecha.weekday())
+
+def reset_semanal_si_corresponde():
+    hoy = date.today()
+    lunes_actual = lunes_de_la_semana(hoy)
+
+    # Evitar múltiples resets la misma semana
+    if st.session_state.get("ultimo_reset") == lunes_actual:
+        return
+
+    recursos = cargar_recursos_operativos()
+
+    for recurso, data in recursos.items():
+        # Resetear stock al máximo semanal (suma de consumo + stock actual)
+        consumo_total = sum(data["consumo_semanal"].values())
+        data["stock_semanal"] += consumo_total
+        data["consumo_semanal"] = {}
+
+    # Guardar cambios
+    with open(RUTA_RECURSOS_JSON, "w", encoding="utf-8") as f:
+        json.dump({"recursos_operativos": recursos}, f, indent=4, ensure_ascii=False)
+
+    # Actualizar session_state
+    st.session_state.recursos_disponibles = {
+        k: v["stock_semanal"] for k, v in recursos.items()
+    }
+
+    st.session_state.ultimo_reset = lunes_actual
