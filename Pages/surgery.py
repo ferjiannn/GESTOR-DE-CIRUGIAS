@@ -11,8 +11,7 @@ if "recursos_disponibles" not in st.session_state:
     recursos = cargar_recursos_operativos()
     # convertir a formato plano: recurso -> stock actual
     st.session_state.recursos_disponibles = {k: v["stock_semanal"] for k, v in recursos.items()}
-    st.write("DEBUG: Recursos disponibles iniciales:", st.session_state.recursos_disponibles)
-
+    
 
 if "recursos_disponibles" not in st.session_state:
     # Inicializa con el stock real de data.json
@@ -158,7 +157,6 @@ for recurso, stock in recursos_actuales.items():
     if cantidad > 0:
         recursos_solicitados[recurso] = cantidad
 
-st.write("DEBUG: Recursos solicitados por el usuario:", recursos_solicitados)
 
 # ============================
 # Validación temprana de recursos
