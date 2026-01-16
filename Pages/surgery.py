@@ -179,6 +179,8 @@ for recurso, stock in recursos_actuales.items():
         value=0,
         step=1
     )
+    if cantidad == max_clinico and max_clinico > 0:
+        st.caption ("Límite alcanzado")
     if cantidad > 0:
         recursos_solicitados[recurso] = cantidad
 
