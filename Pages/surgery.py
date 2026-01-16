@@ -210,6 +210,8 @@ else:
     if validar_sesion(q_data, fecha, sesion):
         st.success(f"Quirófano {q_seleccionado} disponible para la sesión {sesion}.")
 
+
+nombre_cirugia = st.text_input("NOMBRE DEL PACIENTE", max_chars=50)
 # ============================
 # Bloque de AGENDAR cirugía
 # ============================
