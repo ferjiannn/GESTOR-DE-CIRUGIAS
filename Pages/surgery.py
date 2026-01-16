@@ -236,7 +236,7 @@ if st.button("AGENDAR"):
     descontar_recursos(fecha, recursos_solicitados)
 
     # Registrar cirugía
-    registrar_cirugia(st.session_state.quirofanos, q_seleccionado, fecha, sesion, recursos_solicitados)
+    registrar_cirugia(st.session_state.quirofanos, q_seleccionado, fecha, sesion, recursos_solicitados, nombre_cirugia)
 
     # Guardar en JSON
     guardar_en_json(st.session_state.quirofanos)
