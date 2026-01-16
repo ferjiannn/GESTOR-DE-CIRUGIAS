@@ -97,6 +97,7 @@ def registrar_cirugia(quirofanos, q_id, fecha, sesion, recursos_solicitados):
     if fecha_str not in quirofanos[q_id]["cirugias"]:
         quirofanos[q_id]["cirugias"][fecha_str] = []
     cirugia = {
+        "nombre": nombre_cirugia,
         "sesion": sesion,
         "recursos": recursos_solicitados
     }
@@ -210,8 +211,8 @@ else:
     if validar_sesion(q_data, fecha, sesion):
         st.success(f"Quirófano {q_seleccionado} disponible para la sesión {sesion}.")
 
-
 nombre_cirugia = st.text_input("NOMBRE DEL PACIENTE", max_chars=50)
+
 # ============================
 # Bloque de AGENDAR cirugía
 # ============================
