@@ -59,5 +59,4 @@ if st.session_state.clicked:
     
         st.session_state.ir_a_surgery = False
         st.switch_page("surgery")
-
         

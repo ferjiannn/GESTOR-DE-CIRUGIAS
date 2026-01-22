@@ -1,27 +1,30 @@
 {
     "recursos_operativos": {
         "antibioticos": {
-            "stock_semanal": 11,
+            "stock_semanal": 7,
             "min_por_cirugia": 2,
             "max_por_cirugia": 3,
             "consumo_semanal": {
-                "2025-12-27": 4
+                "2025-12-27": 4,
+                "2026-01-22": 4
             }
         },
         "anestesicos": {
-            "stock_semanal": 6,
+            "stock_semanal": 4,
             "min_por_cirugia": 1,
             "max_por_cirugia": 1,
             "consumo_semanal": {
-                "2025-12-27": 2
+                "2025-12-27": 2,
+                "2026-01-22": 2
             }
         },
         "analgesicos": {
-            "stock_semanal": 23,
+            "stock_semanal": 21,
             "min_por_cirugia": 1,
             "max_por_cirugia": 2,
             "consumo_semanal": {
-                "2025-12-27": 2
+                "2025-12-27": 2,
+                "2026-01-22": 2
             }
         },
         "antiinflamatorios": {
@@ -85,30 +88,37 @@
             "consumo_semanal": {}
         },
         "contenedores_esteriles": {
-            "stock_semanal": 8,
+            "stock_semanal": 6,
             "min_por_cirugia": 1,
             "max_por_cirugia": 1,
             "consumo_semanal": {
-                "2025-12-27": 2
+                "2025-12-27": 2,
+                "2026-01-22": 2
             }
         },
         "sets_ortopedicos": {
-            "stock_semanal": 12,
+            "stock_semanal": 10,
             "min_por_cirugia": 1,
             "max_por_cirugia": 1,
-            "consumo_semanal": {}
+            "consumo_semanal": {
+                "2026-01-22": 2
+            }
         },
         "sets_artroscopia": {
-            "stock_semanal": 4,
+            "stock_semanal": 2,
             "min_por_cirugia": 1,
             "max_por_cirugia": 1,
-            "consumo_semanal": {}
+            "consumo_semanal": {
+                "2026-01-22": 2
+            }
         },
         "implantes_ortopedicos": {
-            "stock_semanal": 18,
+            "stock_semanal": 16,
             "min_por_cirugia": 1,
             "max_por_cirugia": 2,
-            "consumo_semanal": {}
+            "consumo_semanal": {
+                "2026-01-22": 2
+            }
         }
     }
 }
