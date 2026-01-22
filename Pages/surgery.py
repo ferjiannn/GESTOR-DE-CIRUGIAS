@@ -189,7 +189,7 @@ for recurso, stock in recursos_actuales.items():
 # ============================
 # Validación temprana de recursos
 # ============================
-ok, errores, advertencias = validar_recursos(fecha, recursos_solicitados)
+ok, errores = validar_recursos(fecha, recursos_solicitados)
 
 if not ok:
     st.error("No se puede programar la cirugía por falta de recursos:")
@@ -197,8 +197,6 @@ if not ok:
         st.error(f"❌ {e}")
     st.stop()
 
-for a in advertencias:
-    st.warning(f"⚠️ {a}")
 
 # Mostrar quirófanos disponibles
 quirofanos_disponibles = obtener_quirofanos_disponibles(st.session_state.quirofanos, fecha)
@@ -217,13 +215,34 @@ nombre_cirugia = st.text_input("NOMBRE DEL PACIENTE", max_chars=50)
 # Bloque de AGENDAR cirugía
 # ============================
 if st.button("AGENDAR"):
-    # Validación de sesión
+
+    # 1️⃣ Validar sesión
     if not validar_sesion(q_data, fecha, sesion):
         st.error("La sesión seleccionada no está disponible")
+
+        sugerencia = sugerir_alternativa(
+            st.session_state.quirofanos,
+            fecha,
+            q_seleccionado,
+            sesion
+        )
+
+        if sugerencia:
+            f, q, s = sugerencia
+            st.warning(
+                f"Sugerencia:\n"
+                f"📅 Fecha: {f}\n"
+                f"🏥 Quirófano: {q}\n"
+                f"⏰ Sesión: {s}"
+            )
+        else:
+            st.error("No hay alternativas disponibles para esta fecha.")
+
         st.stop()
 
-    # Validación de recursos
+    # 2️⃣ Validar recursos (YA CONFIRMANDO)
     ok, errores, advertencias = validar_recursos(fecha, recursos_solicitados)
+
     if not ok:
         for e in errores:
             st.error(f"❌ {e}")
@@ -232,27 +251,20 @@ if st.button("AGENDAR"):
     for a in advertencias:
         st.warning(a)
 
-    # Descontar recursos
+    # 3️⃣ Descontar recursos
     descontar_recursos(fecha, recursos_solicitados)
 
-    # Registrar cirugía
-    registrar_cirugia(st.session_state.quirofanos, q_seleccionado, fecha, sesion, recursos_solicitados, nombre_cirugia)
+    # 4️⃣ Registrar cirugía
+    registrar_cirugia(
+        st.session_state.quirofanos,
+        q_seleccionado,
+        fecha,
+        sesion,
+        recursos_solicitados,
+        nombre_cirugia
+    )
 
-    # Guardar en JSON
+    # 5️⃣ Guardar en JSON
     guardar_en_json(st.session_state.quirofanos)
 
     st.success("Cirugía agendada correctamente")
-else:
-    # Sugerencias alternativas
-    sugerencia = sugerir_alternativa(st.session_state.quirofanos, fecha, q_seleccionado, sesion)
-    if sugerencia is not None:
-        f, q, s = sugerencia
-        st.warning(
-            f"No disponible.\n\n"
-            f"Sugerencia:\n"
-            f"📅 Fecha: {f}\n"
-            f"🏥 Quirófano: {q}\n"
-            f"⏰ Sesión: {s}"
-        )
-    else:
-        st.error("No hay alternativas disponibles para esta fecha.")

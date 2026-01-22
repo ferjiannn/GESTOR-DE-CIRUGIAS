@@ -96,7 +96,11 @@ def descontar_recursos(fecha_cirugia: date, recursos_solicitados=None):
     """
     Descuenta los recursos confirmados de session_state y actualiza recursos.json
     """
-    recursos = recursos_solicitados or RECURSOS_POR_CIRUGIA
+    if recursos_solicitados is None:
+        recursos = RECURSOS_POR_CIRUGIA
+        
+    else:
+        recursos = recursos_solicitados
     stock_actual = st.session_state.recursos_disponibles
 
     # Descontar en session_state
