@@ -92,7 +92,7 @@ def validar_sesion(quirofano, fecha, sesion):
             return False
     return True
 
-def registrar_cirugia(quirofanos, q_id, fecha, sesion, recursos_solicitados):
+def registrar_cirugia(quirofanos, q_id, fecha, sesion, recursos_solicitados, nombre):
     fecha_str = str(fecha)
     if fecha_str not in quirofanos[q_id]["cirugias"]:
         quirofanos[q_id]["cirugias"][fecha_str] = []
@@ -189,7 +189,7 @@ for recurso, stock in recursos_actuales.items():
 # ============================
 # Validación temprana de recursos
 # ============================
-ok, errores = validar_recursos(fecha, recursos_solicitados)
+ok, errores, advertencias = validar_recursos(fecha, recursos_solicitados)
 
 if not ok:
     st.error("No se puede programar la cirugía por falta de recursos:")
