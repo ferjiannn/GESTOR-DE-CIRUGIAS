@@ -5,9 +5,9 @@ from logic_delete import eliminar_cirugia_por_nombre
 st.markdown("# ELIMINAR CIRUGÍA")
 
 # ============================
-# Obtener cirugías por fecha
+# Obtener cirugías agrupadas por fecha
 # ============================
-cirugias_por_fecha = obtener_cirugias_por_fecha()
+cirugias_por_fecha = obtener_cirugias_por_fecha()  # devuelve dict {fecha: [cirugias]}
 
 if not cirugias_por_fecha:
     st.info("NO HAY CIRUGÍAS PROGRAMADAS ACTUALMENTE.")
@@ -17,26 +17,22 @@ if not cirugias_por_fecha:
 # Selección de fecha
 # ============================
 fecha_seleccionada = st.selectbox(
-    "Selecciona la fecha",
+    "SELECCIONA LA FECHA",
     sorted(cirugias_por_fecha.keys())
 )
 
 # ============================
 # Selección de cirugía dentro de la fecha
 # ============================
-cirugias_del_dia = cirugias_por_fecha[fecha_seleccionada]
-nombres_cirugias = [c["nombre"] for c in cirugias_del_dia]
-
 nombre_seleccionado = st.selectbox(
-    f"Selecciona la cirugía de {fecha_seleccionada}",
-    nombres_cirugias
+    "SELECCIONA LA CIRUGÍA",
+    [c["nombre"] for c in cirugias_por_fecha[fecha_seleccionada]]
 )
 
 # ============================
 # Confirmación
 # ============================
 st.warning("SE ELIMINARÁ LA CIRUGÍA SELECCIONADA")
-
 confirmar = st.checkbox("CONFIRMAR")
 
 # ============================
@@ -47,10 +43,11 @@ if st.button("ELIMINAR CIRUGÍA"):
         st.error("DEBES CONFIRMAR LA ELIMINACIÓN.")
         st.stop()
 
-    ok, mensaje = eliminar_cirugia_por_nombre(nombre_seleccionado)
-    
+    # Llamada CORRECTA con nombre + fecha
+    ok, mensaje = eliminar_cirugia_por_nombre(nombre_seleccionado, fecha_seleccionada)
+
     if ok:
         st.success(mensaje)
-        st.experimental_rerun()
+    
     else:
         st.error(mensaje)

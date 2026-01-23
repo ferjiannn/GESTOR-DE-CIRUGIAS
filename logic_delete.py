@@ -1,7 +1,10 @@
 import json
 from datetime import datetime, timedelta
+import os
 
-RUTA_CIRUGIAS = "cirugías.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
+RUTA_CIRUGIAS = os.path.join(BASE_DIR, "Pages", "cirugías.json")
+
 RUTA_RECURSOS = "APP/recursos.json"
 
 
