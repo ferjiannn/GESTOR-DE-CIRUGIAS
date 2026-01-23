@@ -5,11 +5,6 @@
             "2026-01-22": [
                 {
                     "nombre": "pepe",
-                    "sesion": "Mañana (8:00)",
-                    "recursos": {}
-                },
-                {
-                    "nombre": "pepe",
                     "sesion": "Tarde (14:00)",
                     "recursos": {}
                 }

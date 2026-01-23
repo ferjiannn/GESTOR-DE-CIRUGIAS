@@ -2,49 +2,71 @@ import json
 from datetime import datetime, timedelta
 import os
 
-# Ruta al JSON de cirugías
+# Ruta al JSON de cirugías (nivel superior de Pages)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RUTA_CIRUGIAS = os.path.join(BASE_DIR, "cirugías.json")
-RUTA_RECURSOS = os.path.join(BASE_DIR, "APP", "recursos.json")  # Ajusta según tu estructura
+RUTA_CIRUGIAS = os.path.join(BASE_DIR, "Pages", "cirugías.json")
+
+# Ruta al JSON de recursos (en APP)
+RUTA_RECURSOS = os.path.join(BASE_DIR, "APP", "recursos.json")
+
 
 def obtener_lunes(fecha_str):
     """
-    Devuelve la fecha del lunes de la semana de la fecha dada.
+    Dada una fecha 'YYYY-MM-DD', devuelve la fecha del lunes de esa semana.
     """
     fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
     lunes = fecha - timedelta(days=fecha.weekday())
     return lunes.isoformat()
 
+
 def guardar_recursos_operativos(recursos_operativos):
     """
-    Guarda el JSON de recursos operativos actualizado.
+    Guarda los recursos operativos en recursos.json.
     """
+    with open(RUTA_RECURSOS, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    data["recursos_operativos"] = recursos_operativos
     with open(RUTA_RECURSOS, "w", encoding="utf-8") as f:
-        json.dump({"recursos_operativos": recursos_operativos}, f, indent=4, ensure_ascii=False)
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
 
 def eliminar_cirugia_por_nombre(nombre_cirugia):
     """
-    Elimina una cirugía por su nombre, libera recursos y actualiza los JSON.
+    Elimina la cirugía por nombre y libera recursos correspondientes.
     """
     # 1️⃣ Cargar cirugías
     if not os.path.exists(RUTA_CIRUGIAS):
-        return False, "EL ARCHIVO DE CIRUGÍAS NO EXISTE."
+        return False, "EL ARCHIVO DE CIRUGÍAS NO EXISTE"
 
     with open(RUTA_CIRUGIAS, "r", encoding="utf-8") as f:
-        quirofanos = json.load(f)
+        cirugias = json.load(f)
 
-    # Buscar cirugía
-    encontrada = None
-    q_id_encontrado = None
-    fecha_encontrada = None
-
-    for q_id, q_data in quirofanos.items():
-        for fecha, cirugias_dia in q_data.get("cirugias", {}).items():
-            for c in cirugias_dia:
+    # Buscar la cirugía en todo el JSON
+    encontrada = False
+    for q_id, q_data in cirugias.items():
+        for fecha, lista_cirugias in q_data.get("cirugias", {}).items():
+            for c in lista_cirugias:
                 if c.get("nombre") == nombre_cirugia:
-                    encontrada = c
-                    q_id_encontrado = q_id
-                    fecha_encontrada = fecha
+                    # Guardar datos para liberar recursos
+                    recursos = c.get("recursos", {})
+                    lunes = obtener_lunes(fecha)
+
+                    # Liberar recursos en recursos_operativos
+                    with open(RUTA_RECURSOS, "r", encoding="utf-8") as f:
+                        recursos_operativos = json.load(f)["recursos_operativos"]
+
+                    for r, cantidad in recursos.items():
+                        consumo = recursos_operativos[r].get("consumo_semanal", {})
+                        if lunes in consumo:
+                            consumo[lunes] -= cantidad
+                            if consumo[lunes] <= 0:
+                                del consumo[lunes]
+
+                    guardar_recursos_operativos(recursos_operativos)
+
+                    # Eliminar la cirugía
+                    lista_cirugias.remove(c)
+                    encontrada = True
                     break
             if encontrada:
                 break
@@ -52,39 +74,10 @@ def eliminar_cirugia_por_nombre(nombre_cirugia):
             break
 
     if not encontrada:
-        return False, "LA CIRUGÍA NO EXISTE."
+        return False, "LA CIRUGÍA NO EXISTE"
 
-    # 2️⃣ Liberar recursos
-    if not os.path.exists(RUTA_RECURSOS):
-        return False, "EL ARCHIVO DE RECURSOS NO EXISTE."
-
-    with open(RUTA_RECURSOS, "r", encoding="utf-8") as f:
-        recursos_operativos = json.load(f).get("recursos_operativos", {})
-
-    lunes = obtener_lunes(fecha_encontrada)
-    recursos = encontrada.get("recursos", {})
-
-    for recurso, cantidad in recursos.items():
-        if recurso in recursos_operativos:
-            consumo = recursos_operativos[recurso].get("consumo_semanal", {})
-            consumo[lunes] = consumo.get(lunes, 0) - cantidad
-            if consumo[lunes] <= 0:
-                del consumo[lunes]
-
-    # Guardar recursos actualizados
-    guardar_recursos_operativos(recursos_operativos)
-
-    # 3️⃣ Eliminar cirugía del JSON
-    cirugias_dia = quirofanos[q_id_encontrado]["cirugias"].get(fecha_encontrada, [])
-    cirugias_dia = [c for c in cirugias_dia if c.get("nombre") != nombre_cirugia]
-    quirofanos[q_id_encontrado]["cirugias"][fecha_encontrada] = cirugias_dia
-
-    # Si la fecha queda vacía, se puede eliminar la clave
-    if not quirofanos[q_id_encontrado]["cirugias"][fecha_encontrada]:
-        del quirofanos[q_id_encontrado]["cirugias"][fecha_encontrada]
-
-    # Guardar cirugías actualizadas
+    # Guardar los cambios en el JSON de cirugías
     with open(RUTA_CIRUGIAS, "w", encoding="utf-8") as f:
-        json.dump(quirofanos, f, indent=4, ensure_ascii=False)
+        json.dump(cirugias, f, ensure_ascii=False, indent=4)
 
     return True, "CIRUGÍA ELIMINADA CORRECTAMENTE"

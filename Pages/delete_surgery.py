@@ -5,7 +5,7 @@ from logic_delete import eliminar_cirugia_por_nombre
 st.markdown("# ELIMINAR CIRUGÍA")
 
 # ============================
-# Obtener cirugías por fecha
+# Cargar cirugías existentes por fecha
 # ============================
 cirugias_por_fecha = obtener_cirugias_por_fecha()
 
@@ -14,28 +14,30 @@ if not cirugias_por_fecha:
     st.stop()
 
 # ============================
-# Selección de fecha
+# Mostrar selectboxes por fecha
 # ============================
-fecha_seleccionada = st.selectbox(
-    "SELECCIONA LA FECHA DE LA CIRUGÍA",
-    list(cirugias_por_fecha.keys())
-)
+seleccion_fecha = None
+seleccion_nombre = None
 
-# Obtener solo los nombres de pacientes de esa fecha
-nombres_cirugias = [c["nombre"] for c in cirugias_por_fecha[fecha_seleccionada]]
+for fecha, lista_cirugias in cirugias_por_fecha.items():
+    st.subheader(f"FECHA: {fecha}")
 
-# ============================
-# Selección de cirugía
-# ============================
-nombre_seleccionado = st.selectbox(
-    f"CIRUGÍAS PROGRAMADAS PARA {fecha_seleccionada}",
-    nombres_cirugias
-)
+    nombres = [c["nombre"] for c in lista_cirugias]
+    nombre_seleccionado = st.selectbox(
+        f"SELECCIONA LA CIRUGÍA DEL DÍA {fecha}",
+        nombres,
+        key=fecha  # clave única para cada selectbox
+    )
+
+    # Guardamos la última selección (o la que quieras usar para eliminar)
+    seleccion_fecha = fecha
+    seleccion_nombre = nombre_seleccionado
 
 # ============================
 # Confirmación
 # ============================
 st.warning("SE ELIMINARÁ LA CIRUGÍA SELECCIONADA")
+
 confirmar = st.checkbox("CONFIRMAR")
 
 # ============================
@@ -46,10 +48,11 @@ if st.button("ELIMINAR CIRUGÍA"):
         st.error("DEBES CONFIRMAR LA ELIMINACIÓN.")
         st.stop()
 
-    ok, mensaje = eliminar_cirugia_por_nombre(nombre_seleccionado)
+    ok, mensaje = eliminar_cirugia_por_nombre(seleccion_nombre)
 
     if ok:
-        st.success(mensaje.upper())
-        st.experimental_rerun()  # Refresca la página para actualizar los selectbox
+        st.success(mensaje)
+        st.experimental_set_query_params()  # recarga la página sin usar experimental_rerun
+        st.experimental_rerun = None  # previene error si la función no existe
     else:
-        st.error(mensaje.upper())
+        st.error(mensaje)
