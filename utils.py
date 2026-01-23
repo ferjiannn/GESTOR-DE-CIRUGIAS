@@ -1,15 +1,14 @@
 import json
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RUTA_CIRUGIAS_JSON = os.path.join(BASE_DIR, "cirugías.json")
-
+# Ruta al JSON dentro de Pages
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # esto apunta a Pages/
+RUTA_CIRUGIAS_JSON = os.path.join(BASE_DIR, "cirugías.json")  # apunta a Pages/cirugías.json
 
 def obtener_cirugias_programadas():
     """
     Devuelve una lista plana de todas las cirugías programadas.
     """
-
     if not os.path.exists(RUTA_CIRUGIAS_JSON):
         return []
 

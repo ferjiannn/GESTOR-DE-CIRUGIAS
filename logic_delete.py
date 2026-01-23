@@ -4,10 +4,8 @@ import streamlit as st
 from datetime import date
 from resources_validation import cargar_recursos_operativos
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Pages/
 RUTA_CIRUGIAS = os.path.join(BASE_DIR, "cirugías.json")
-RUTA_RECURSOS = os.path.join(BASE_DIR, "APP", "recursos.json")
-
 
 def eliminar_cirugia_por_nombre(nombre_cirugia: str):
     if not os.path.exists(RUTA_CIRUGIAS):
