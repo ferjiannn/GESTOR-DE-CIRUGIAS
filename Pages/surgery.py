@@ -150,18 +150,18 @@ st.markdown("# PLANIFICACIÓN DE CIRUGÍAS")
 # Selección de fecha
 hoy = date.today()
 fecha = st.date_input(
-    "Selecciona la fecha de cirugía",
+    "SELECCIONA LA FECHA",
     min_value=hoy,
     max_value=hoy + timedelta(days=30)
 )
 
 # Selección de sesión
-sesion = st.radio("Selecciona la sesión", SESIONES)
+sesion = st.radio("SELECCIONA LA SESIÓN", SESIONES)
 
 # ============================
 # Recursos solicitados (nombres consistentes con data.json y recursos.json)
 # ============================
-st.subheader("Recursos para la cirugía")
+st.subheader("RRECURSOS PARA LA CIRUGÍA")
 
 # Cargar recursos disponibles para mostrar
 recursos_actuales = st.session_state.recursos_disponibles
@@ -181,7 +181,7 @@ for recurso, stock in recursos_actuales.items():
         step=1
     )
     if cantidad == max_clinico and max_clinico > 0:
-        st.caption ("Límite alcanzado")
+        st.caption ("LÍMITE ALCANZADO")
     if cantidad > 0:
         recursos_solicitados[recurso] = cantidad
 
@@ -197,6 +197,7 @@ if not ok:
         st.error(f"❌ {e}")
     st.stop()
 
+q_data = None
 
 # Mostrar quirófanos disponibles
 quirofanos_disponibles = obtener_quirofanos_disponibles(st.session_state.quirofanos, fecha)
@@ -216,9 +217,17 @@ nombre_cirugia = st.text_input("NOMBRE DEL PACIENTE", max_chars=50)
 # ============================
 if st.button("AGENDAR"):
 
+    if q_data is None:
+        st.error ("NO HAY QUIRÓFANO VÁLIDO SELECCIONADO")
+        st.stop()
+
+    if not nombre_cirugia.strip():
+        st.error("DEBE INTRODUCIR EL NOMBRE DEL PACIENTE")
+        st.stop()
+
     # 1️⃣ Validar sesión
     if not validar_sesion(q_data, fecha, sesion):
-        st.error("La sesión seleccionada no está disponible")
+        st.error("NO DISPONIBLE")
 
         sugerencia = sugerir_alternativa(
             st.session_state.quirofanos,
@@ -267,4 +276,4 @@ if st.button("AGENDAR"):
     # 5️⃣ Guardar en JSON
     guardar_en_json(st.session_state.quirofanos)
 
-    st.success("Cirugía agendada correctamente")
+    st.success("CIRUGÍA AGENDADA CORRECTAMENTE")
