@@ -1,13 +1,17 @@
 import json
 import os
 
-# Ruta al JSON de cirugías (nivel superior de Pages)
+# Ruta a cirugías.json
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RUTA_CIRUGIAS_JSON = os.path.join(BASE_DIR, "Pages", "cirugías.json")
-
+RUTA_CIRUGIAS_JSON = os.path.join(BASE_DIR, "Pages/cirugías.json")
 
 def obtener_cirugias_programadas():
-   
+    """
+    Devuelve una lista plana de todas las cirugías programadas.
+    Cada elemento es un diccionario con:
+    nombre, fecha, sesion, quirófano y recursos
+    """
+
     if not os.path.exists(RUTA_CIRUGIAS_JSON):
         return []
 
@@ -17,8 +21,8 @@ def obtener_cirugias_programadas():
     cirugias = []
 
     for q_id, q_data in quirofanos.items():
-        for fecha, lista_cirugias in q_data.get("cirugias", {}).items():
-            for c in lista_cirugias:
+        for fecha, cirugias_dia in q_data.get("cirugias", {}).items():
+            for c in cirugias_dia:
                 cirugias.append({
                     "nombre": c.get("nombre"),
                     "fecha": fecha,
@@ -26,20 +30,23 @@ def obtener_cirugias_programadas():
                     "quirofano": q_id,
                     "recursos": c.get("recursos", {})
                 })
+
     return cirugias
 
-
 def obtener_cirugias_por_fecha():
-   
+    """
+    Devuelve un diccionario agrupado por fecha.
+    Cada clave es una fecha y el valor es la lista de cirugías de ese día.
+    Útil para crear selectboxes por fecha en delete_surgery.py
+    """
+
     cirugias = obtener_cirugias_programadas()
-    por_fecha = {}
+    cirugias_por_fecha = {}
 
     for c in cirugias:
         fecha = c["fecha"]
-        if fecha not in por_fecha:
-            por_fecha[fecha] = []
-        por_fecha[fecha].append(c)
+        if fecha not in cirugias_por_fecha:
+            cirugias_por_fecha[fecha] = []
+        cirugias_por_fecha[fecha].append(c)
 
-    # Ordenar las fechas de forma ascendente
-    por_fecha_ordenado = dict(sorted(por_fecha.items()))
-    return por_fecha_ordenado
+    return cirugias_por_fecha

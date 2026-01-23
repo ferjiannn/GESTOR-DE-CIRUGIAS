@@ -5,7 +5,7 @@ from logic_delete import eliminar_cirugia_por_nombre
 st.markdown("# ELIMINAR CIRUGÍA")
 
 # ============================
-# Cargar cirugías existentes por fecha
+# Obtener cirugías por fecha
 # ============================
 cirugias_por_fecha = obtener_cirugias_por_fecha()
 
@@ -14,24 +14,23 @@ if not cirugias_por_fecha:
     st.stop()
 
 # ============================
-# Mostrar selectboxes por fecha
+# Selección de fecha
 # ============================
-seleccion_fecha = None
-seleccion_nombre = None
+fecha_seleccionada = st.selectbox(
+    "Selecciona la fecha",
+    sorted(cirugias_por_fecha.keys())
+)
 
-for fecha, lista_cirugias in cirugias_por_fecha.items():
-    st.subheader(f"FECHA: {fecha}")
+# ============================
+# Selección de cirugía dentro de la fecha
+# ============================
+cirugias_del_dia = cirugias_por_fecha[fecha_seleccionada]
+nombres_cirugias = [c["nombre"] for c in cirugias_del_dia]
 
-    nombres = [c["nombre"] for c in lista_cirugias]
-    nombre_seleccionado = st.selectbox(
-        f"SELECCIONA LA CIRUGÍA DEL DÍA {fecha}",
-        nombres,
-        key=fecha  # clave única para cada selectbox
-    )
-
-    # Guardamos la última selección (o la que quieras usar para eliminar)
-    seleccion_fecha = fecha
-    seleccion_nombre = nombre_seleccionado
+nombre_seleccionado = st.selectbox(
+    f"Selecciona la cirugía de {fecha_seleccionada}",
+    nombres_cirugias
+)
 
 # ============================
 # Confirmación
@@ -48,11 +47,10 @@ if st.button("ELIMINAR CIRUGÍA"):
         st.error("DEBES CONFIRMAR LA ELIMINACIÓN.")
         st.stop()
 
-    ok, mensaje = eliminar_cirugia_por_nombre(seleccion_nombre)
-
+    ok, mensaje = eliminar_cirugia_por_nombre(nombre_seleccionado)
+    
     if ok:
         st.success(mensaje)
-        st.experimental_set_query_params()  # recarga la página sin usar experimental_rerun
-        st.experimental_rerun = None  # previene error si la función no existe
+        st.experimental_rerun()
     else:
         st.error(mensaje)

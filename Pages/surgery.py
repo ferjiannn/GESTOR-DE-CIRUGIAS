@@ -161,7 +161,7 @@ sesion = st.radio("SELECCIONA LA SESIÓN", SESIONES)
 # ============================
 # Recursos solicitados (nombres consistentes con data.json y recursos.json)
 # ============================
-st.subheader("RRECURSOS PARA LA CIRUGÍA")
+st.subheader("RECURSOS PARA LA CIRUGÍA")
 
 # Cargar recursos disponibles para mostrar
 recursos_actuales = st.session_state.recursos_disponibles

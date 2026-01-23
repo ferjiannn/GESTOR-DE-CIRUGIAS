@@ -4,14 +4,19 @@
         "cirugias": {
             "2026-01-22": [
                 {
-                    "nombre": "pepe",
+                    "nombre": "jose",
+                    "sesion": "Mañana (8:00)",
+                    "recursos": {}
+                },
+                {
+                    "nombre": "cuco",
                     "sesion": "Tarde (14:00)",
                     "recursos": {}
                 }
             ],
             "2026-01-24": [
                 {
-                    "nombre": "cuco",
+                    "nombre": "ij",
                     "sesion": "Mañana (8:00)",
                     "recursos": {}
                 }
@@ -23,12 +28,12 @@
         "cirugias": {
             "2026-01-22": [
                 {
-                    "nombre": "pepe",
+                    "nombre": "cuco",
                     "sesion": "Tarde (14:00)",
                     "recursos": {}
                 },
                 {
-                    "nombre": "pepe",
+                    "nombre": "cuco",
                     "sesion": "Mañana (8:00)",
                     "recursos": {}
                 }
