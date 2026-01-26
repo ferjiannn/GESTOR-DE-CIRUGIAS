@@ -56,3 +56,16 @@ if st.button("ELIMINAR CIRUGÍA"):
     
     else:
         st.error(mensaje)
+
+if "ir_a_staff" not in st.session_state:
+    st.session_state.ir_a_staff = False
+
+def marcar_staff():
+    st.session_state.ir_a_staff = True
+
+st.button("ATRÁS", on_click=marcar_staff)
+
+
+if st.session_state.ir_a_staff:
+    st.session_state.ir_a_staff = False
+    st.switch_page("Pages/staff_access.py")

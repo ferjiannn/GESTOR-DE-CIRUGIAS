@@ -112,36 +112,46 @@ def registrar_cirugia(quirofanos, q_id, fecha, sesion, recursos_solicitados, nom
 
 def sugerir_alternativa(quirofanos, fecha, q_original, sesion_original):
     fecha_str = str(fecha)
+
     # 1️⃣ Otra sesión en el mismo quirófano
-    cirugias_mismo_q = quirofanos[q_original]["cirugias"].get(fecha_str, [])
-    sesiones_ocupadas = [c["sesion"] for c in cirugias_mismo_q]
-    for s in SESIONES:
-        if s != sesion_original and s not in sesiones_ocupadas:
-            return fecha, q_original, s
+    if q_original is not None and q_original in quirofanos:
+        cirugias_mismo_q = quirofanos[q_original].get("cirugias", {}).get(fecha_str, [])
+        sesiones_ocupadas = [c["sesion"] for c in cirugias_mismo_q]
+
+        for s in SESIONES:
+            if s != sesion_original and s not in sesiones_ocupadas:
+                return fecha, q_original, s
+
     # 2️⃣ Otro quirófano en la misma fecha
     for q_id, q_data in quirofanos.items():
         if q_id == q_original:
             continue
-        cirugias_dia = q_data["cirugias"].get(fecha_str, [])
+
+        cirugias_dia = q_data.get("cirugias", {}).get(fecha_str, [])
         if len(cirugias_dia) >= MAX_CIRUGIAS_POR_DIA:
             continue
+
         sesiones_ocupadas = [c["sesion"] for c in cirugias_dia]
         for s in SESIONES:
             if s not in sesiones_ocupadas:
                 return fecha, q_id, s
-    # 3️⃣ Otra fecha (siguiente disponible)
+
+    # 3️⃣ Otra fecha (hasta 30 días)
     for i in range(1, 31):
         nueva_fecha = fecha + timedelta(days=i)
         nueva_fecha_str = str(nueva_fecha)
+
         for q_id, q_data in quirofanos.items():
-            cirugias_dia = q_data["cirugias"].get(nueva_fecha_str, [])
+            cirugias_dia = q_data.get("cirugias", {}).get(nueva_fecha_str, [])
             if len(cirugias_dia) >= MAX_CIRUGIAS_POR_DIA:
                 continue
+
             sesiones_ocupadas = [c["sesion"] for c in cirugias_dia]
             for s in SESIONES:
                 if s not in sesiones_ocupadas:
                     return nueva_fecha, q_id, s
-    return None
+
+    return None, None, None
 
 # ============================
 # Estado de quirófanos
@@ -220,13 +230,33 @@ q_data = None
 
 if not quirofanos_disponibles:
     st.error("No hay quirófanos disponibles para esta fecha.")
+
+    sugerencia = sugerir_alternativa(
+        st.session_state.quirofanos,
+        fecha,
+        None,
+        None
+    )
+
+    if sugerencia:
+        f, q, s = sugerencia
+        st.warning(
+            f"Sugerencia:\n"
+            f"📅 Fecha: {f}\n"
+            f"🏥 Quirófano: {q}\n"
+            f"⏰ Sesión: {s}"
+        )
+    else:
+        st.error("No hay alternativas disponibles en los próximos 30 días.")
+
+    st.stop()
 else:
     q_seleccionado = st.selectbox("Selecciona el quirófano", quirofanos_disponibles)
     q_data = st.session_state.quirofanos[q_seleccionado]
     if validar_sesion(q_data, fecha, sesion):
         st.success(f"Quirófano {q_seleccionado} disponible para la sesión {sesion}.")
 
-nombre_cirugia = st.text_input("NOMBRE DEL PACIENTE", max_chars=50)
+nombre_cirugia = st.text_input("NOMBRE DEL PACIENTE (especificar quirófano)", max_chars=50)
 
 # ============================
 # Bloque de AGENDAR cirugía
@@ -265,7 +295,7 @@ if st.button("AGENDAR"):
 
         st.stop()
 
-    # 2️⃣ Validar recursos (YA CONFIRMANDO)
+    # Validar recursos 
     ok, errores, advertencias = validar_recursos(fecha, recursos_solicitados)
 
     if not ok:
@@ -293,3 +323,32 @@ if st.button("AGENDAR"):
     guardar_en_json(st.session_state.quirofanos)
 
     st.success("CIRUGÍA AGENDADA CORRECTAMENTE")
+
+# ============================
+# Botones fijos de navegación
+# ============================
+
+if "ir_a_delete" not in st.session_state:
+    st.session_state.ir_a_delete = False
+if "ir_a_staff" not in st.session_state:
+    st.session_state.ir_a_staff = False
+
+def marcar_delete():
+    st.session_state.ir_a_delete = True
+
+def marcar_staff():
+    st.session_state.ir_a_staff = True
+
+col1, col2 = st.columns(2)
+with col1:
+    st.button("ELIMINAR CIRUGÍA", on_click=marcar_delete)
+with col2:
+    st.button("ATRÁS", on_click=marcar_staff)
+
+if st.session_state.ir_a_delete:
+    st.session_state.ir_a_delete = False
+    st.switch_page("Pages/delete_surgery.py")
+
+if st.session_state.ir_a_staff:
+    st.session_state.ir_a_staff = False
+    st.switch_page("Pages/staff_access.py")
