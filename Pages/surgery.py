@@ -2,7 +2,14 @@ import streamlit as st
 import json
 import os
 from datetime import date, timedelta
-from resources_validation import cargar_recursos_operativos, validar_recursos, descontar_recursos, inicializar_recursos
+from resources_validation import (cargar_recursos_operativos, validar_recursos, descontar_recursos, inicializar_recursos, reset_semanal_si_corresponde)
+
+if st.session_state.get("reset_surgery", False):
+    st.session_state.pop("recursos_disponibles", None)
+    st.session_state.pop("agenda", None)
+    st.session_state.pop("quirófanos_disponibles", None)
+    st.session_state.pop("sesiones_disponibles", None)
+    st.session_state.reset_surgery = False
 
 # ============================
 # Inicialización de recursos
@@ -142,18 +149,30 @@ def sugerir_alternativa(quirofanos, fecha, q_original, sesion_original):
 if "quirofanos" not in st.session_state:
     st.session_state.quirofanos = cargar_desde_json()
 
+
+if "recargar_estado" not in st.session_state:
+    st.session_state.recargar_estado = False
+
+if st.session_state.recargar_estado:
+    st.session_state.quirofanos = cargar_desde_json()
+    st.session_state.recargar_estado = False
+
+
 # ============================
 # Interfaz Streamlit
 # ============================
 st.markdown("# PLANIFICACIÓN DE CIRUGÍAS")
 
 # Selección de fecha
-hoy = date.today()
+hoy = date.today() + timedelta(days = 1)
 fecha = st.date_input(
     "SELECCIONA LA FECHA",
     min_value=hoy,
     max_value=hoy + timedelta(days=30)
 )
+
+quirofanos_disponibles = obtener_quirofanos_disponibles(st.session_state.quirofanos, fecha)
+
 
 # Selección de sesión
 sesion = st.radio("SELECCIONA LA SESIÓN", SESIONES)
@@ -198,9 +217,6 @@ if not ok:
     st.stop()
 
 q_data = None
-
-# Mostrar quirófanos disponibles
-quirofanos_disponibles = obtener_quirofanos_disponibles(st.session_state.quirofanos, fecha)
 
 if not quirofanos_disponibles:
     st.error("No hay quirófanos disponibles para esta fecha.")

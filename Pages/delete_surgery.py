@@ -48,6 +48,11 @@ if st.button("ELIMINAR CIRUGÍA"):
 
     if ok:
         st.success(mensaje)
+        st.session_state.recargar_estado = True
+        st.session_state.pop("recursos_disponibles", None)
+        st.session_state.pop("agenda", None)
+        st.session_state.reset_surgery = True
+        st.rerun()
     
     else:
         st.error(mensaje)

@@ -1,3 +1,10 @@
 {
-    
+    "Q0-1": {
+        "estado": "disponible",
+        "cirugias": {}
+    },
+    "Q0-2": {
+        "estado": "disponible",
+        "cirugias": {}
+    }
 }
