@@ -66,5 +66,5 @@ if st.session_state.acceso:
                 st.switch_page("Pages/surgery.py")
 
         with col2:
-            if st.button("ELIMINAR CIRUGÍA"):
-                st.switch_page("Pages/delete_surgery.py")
+            if st.button("VER CIRUGÍAS AGENDADAS"):
+                st.switch_page("Pages/watch_surgery.py")

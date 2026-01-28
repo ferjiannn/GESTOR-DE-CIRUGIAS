@@ -1,11 +1,13 @@
 {
     "recursos_operativos": {
         "antibioticos": {
-            "stock_semanal": 15,
+            "stock_semanal": 12,
             "max_por_cirugia": 3,
             "consumo_semanal": {
                 "2025-12-27": 4,
-                "2026-01-22": 9
+                "2026-01-22": 9,
+                "2026-01-29": 10,
+                "2026-01-26": 3
             }
         },
         "anestesicos": {
@@ -13,7 +15,8 @@
             "max_por_cirugia": 1,
             "consumo_semanal": {
                 "2025-12-27": 2,
-                "2026-01-22": 5
+                "2026-01-22": 5,
+                "2026-01-29": 3
             }
         },
         "analgesicos": {
@@ -27,7 +30,9 @@
         "antiinflamatorios": {
             "stock_semanal": 20,
             "max_por_cirugia": 2,
-            "consumo_semanal": {}
+            "consumo_semanal": {
+                "2026-01-29": 2
+            }
         },
         "anticoagulantes": {
             "stock_semanal": 12,

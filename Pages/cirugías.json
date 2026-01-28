@@ -1,7 +1,17 @@
 {
     "Q0-1": {
         "estado": "disponible",
-        "cirugias": {}
+        "cirugias": {
+            "2026-01-29": [
+                {
+                    "nombre": "ec3ef",
+                    "sesion": "Mañana (8:00)",
+                    "recursos": {
+                        "antibioticos": 3
+                    }
+                }
+            ]
+        }
     },
     "Q0-2": {
         "estado": "disponible",

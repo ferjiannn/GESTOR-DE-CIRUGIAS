@@ -1,5 +1,9 @@
 import json
 import os
+from datetime import timedelta
+
+def obtener_lunes_de_semana(fecha):
+    return fecha - timedelta(days=fecha.weekday())
 
 # Ruta a cirugías.json
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -133,9 +133,23 @@ def lunes_de_la_semana(fecha: date) -> date:
     """Devuelve el lunes de la semana de una fecha"""
     return fecha - timedelta(days=fecha.weekday())
 
-def reset_semanal_si_corresponde():
-    hoy = date.today()
-    lunes_actual = lunes_de_la_semana(hoy)
+# =============================
+# resources_validation.py
+# =============================
+
+def reset_semanal_si_corresponde(recursos_semana):
+    """
+    Resetea los recursos de la semana al stock inicial si es lunes.
+    """
+    from datetime import date, timedelta
+    lunes_actual = date.today() - timedelta(days=date.today().weekday())
+
+    # Si hoy es lunes, reinicia recursos
+    if date.today() == lunes_actual:
+        return inicializar_recursos()
+    
+    # Si no es lunes, deja los recursos como estaban
+    return recursos_semana
 
     # Evitar múltiples resets la misma semana
     if st.session_state.get("ultimo_reset") == lunes_actual:

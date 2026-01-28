@@ -2,7 +2,13 @@ import streamlit as st
 from utils import obtener_cirugias_por_fecha
 from logic_delete import eliminar_cirugia_por_nombre
 
-st.markdown("# ELIMINAR CIRUGÍA")
+st.markdown("# CIRUGÍAS AGENDADAS")
+
+if "ir_a_staff" not in st.session_state:
+    st.session_state.ir_a_staff = False
+
+def marcar_staff():
+    st.session_state.ir_a_staff = True
 
 # ============================
 # Obtener cirugías agrupadas por fecha
@@ -10,7 +16,9 @@ st.markdown("# ELIMINAR CIRUGÍA")
 cirugias_por_fecha = obtener_cirugias_por_fecha()  # devuelve dict {fecha: [cirugias]}
 
 if not cirugias_por_fecha:
-    st.info("NO HAY CIRUGÍAS PROGRAMADAS ACTUALMENTE.")
+    st.info("NO HAY CIRUGÍAS AGENDADAS ACTUALMENTE.")
+    if st.button("ATRÁS", on_click=marcar_staff):
+        st.switch_page("Pages/staff_access.py")
     st.stop()
 
 # ============================
@@ -53,15 +61,10 @@ if st.button("ELIMINAR CIRUGÍA"):
         st.session_state.pop("agenda", None)
         st.session_state.reset_surgery = True
         st.rerun()
+
     
     else:
         st.error(mensaje)
-
-if "ir_a_staff" not in st.session_state:
-    st.session_state.ir_a_staff = False
-
-def marcar_staff():
-    st.session_state.ir_a_staff = True
 
 st.button("ATRÁS", on_click=marcar_staff)
 
