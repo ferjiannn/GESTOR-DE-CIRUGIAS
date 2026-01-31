@@ -38,6 +38,12 @@ def eliminar_cirugias_pasadas():
 
     return eliminadas
 
+
+cirugias_eliminadas = eliminar_cirugias_pasadas()
+
+if cirugias_eliminadas > 0:
+    st.info(f"Se eliminaron automáticamente {cirugias_eliminadas} cirugías pasadas.")
+
 st.markdown("# CIRUGÍAS AGENDADAS")
 
 if "ir_a_staff" not in st.session_state:

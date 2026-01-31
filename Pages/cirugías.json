@@ -1,24 +1,7 @@
 {
     "Q0-1": {
         "estado": "disponible",
-        "cirugias": {
-            "2026-02-01": [
-                {
-                    "nombre": "wed",
-                    "sesion": "Mañana (8:00)",
-                    "recursos": {
-                        "Antibioticos": 3
-                    }
-                },
-                {
-                    "nombre": "wed 2",
-                    "sesion": "Tarde (14:00)",
-                    "recursos": {
-                        "Antibioticos": 3
-                    }
-                }
-            ]
-        }
+        "cirugias": {}
     },
     "Q0-2": {
         "estado": "disponible",
