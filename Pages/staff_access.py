@@ -3,15 +3,15 @@ import json
 
 st.markdown("# STAFF ACCESS")
 
-# ============================
+
 # Session state
-# ============================
+
 if "acceso" not in st.session_state:
     st.session_state.acceso = False
 
-# ============================
+
 # Cargar staff desde data.json
-# ============================
+
 with open("APP/data.json", "r", encoding="utf-8") as Data:
     appdata = json.load(Data)
 
@@ -22,15 +22,15 @@ for categoria in staff.values():
     if isinstance(categoria, list):
         staff_list.extend(categoria)
 
-# ============================
+
 # Inputs
-# ============================
+
 input_name = st.text_input("NOMBRE")
 input_id = st.text_input("IDENTIFICACIÓN")
 
-# ============================
+
 # Botón ACCEDER
-# ============================
+
 if st.button("ACCEDER"):
 
     # Validación de campos vacíos
@@ -54,9 +54,9 @@ if st.button("ACCEDER"):
         st.error("ACCESO DENEGADO")
         st.session_state.acceso = False
 
-# ============================
+
 # Opciones posteriores al acceso
-# ============================
+
 if st.session_state.acceso:
 
         col1, col2 = st.columns(2)
