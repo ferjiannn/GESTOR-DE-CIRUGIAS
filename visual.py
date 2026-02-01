@@ -1,4 +1,3 @@
-
 import streamlit as st
 
 def ocultar_sidebar():
@@ -14,3 +13,27 @@ def ocultar_sidebar():
         """,
         unsafe_allow_html=True
     )
+
+# critical_resources.py
+
+RECURSOS_CRITICOS = [
+    "Anestesicos",
+    "Campos esteriles",
+    "Suturas y grapas",
+    "Soluciones intravenosas",
+    "Sets ortopedicos",
+    "Contenedores esteriles"
+]
+def validar_recursos_criticos(stock_semana, recursos_solicitados):
+
+    for recurso in RECURSOS_CRITICOS:
+
+        # 1️⃣ Si no hay stock disponible en la semana → bloqueo automático
+        if stock_semana.get(recurso, 0) <= 0:
+            return False, f"NO SE PUEDE EFECTUAR LA CIRUGÍA SIN {recurso}"
+
+        # 2️⃣ Si hay stock pero el usuario no seleccionó al menos 1
+        if recurso not in recursos_solicitados or recursos_solicitados.get(recurso, 0) <= 0:
+            return False, f"NO SE PUEDE EFECTUAR LA CIRUGÍA SIN {recurso}"
+
+    return True, None

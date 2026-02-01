@@ -27,8 +27,33 @@ for categoria in staff.values():
 
 # Inputs
 
-input_name = st.text_input("NOMBRE")
-input_id = st.text_input("IDENTIFICACIÓN")
+input_name = st.text_input(
+    label="",
+    placeholder= "NOMBRE")
+input_id = st.text_input(
+    label="",
+    placeholder="IDENTIFICACIÓN")
+
+# ESTILO BOTÓN 
+
+st.markdown("""
+<style>
+div.stButton > button {
+    width: 100%;
+    background-color: #0A6ED1;
+    color: white;
+    font-size: 18px;
+    height: 55px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+}
+div.stButton > button:hover {
+    background-color: #084C9E;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 
 # Botón ACCEDER

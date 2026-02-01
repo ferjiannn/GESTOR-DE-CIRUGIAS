@@ -7,6 +7,24 @@ import json
 from visual import ocultar_sidebar
 ocultar_sidebar()
 
+st.markdown("""
+<style>
+div.stButton > button {
+    width: 100%;
+    background-color: #0A6ED1;
+    color: white;
+    font-size: 18px;
+    height: 55px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+}
+div.stButton > button:hover {
+    background-color: #084C9E;
+}
+</style>
+""", unsafe_allow_html=True)
+
 def eliminar_cirugias_pasadas():
    
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -81,38 +99,38 @@ nombre_seleccionado = st.selectbox(
     [c["nombre"] for c in cirugias_por_fecha[fecha_seleccionada]]
 )
 
-
-# Confirmación
-
-st.warning("SE ELIMINARÁ LA CIRUGÍA SELECCIONADA")
-confirmar = st.checkbox("CONFIRMAR")
+if "confirmar_delete" not in st.session_state:
+    st.session_state.confirmar_delete = False
 
 
-# Botón de eliminación
-
-if st.button("ELIMINAR CIRUGÍA"):
-    if not confirmar:
-        st.error("DEBES CONFIRMAR LA ELIMINACIÓN.")
-        st.stop()
-
-    # Llamada CORRECTA con nombre + fecha
-    ok, mensaje = eliminar_cirugia_por_nombre(nombre_seleccionado, fecha_seleccionada)
-
-    if ok:
-        st.success(mensaje)
-        st.session_state.recargar_estado = True
-        st.session_state.pop("recursos_disponibles", None)
-        st.session_state.pop("agenda", None)
-        st.session_state.reset_surgery = True
+if not st.session_state.confirmar_delete:
+    if st.button("ELIMINAR CIRUGÍA"):
+        st.session_state.confirmar_delete = True
         st.rerun()
 
+else:
+    st.warning("CONFIRME QUE DESEA ELIMINAR ESTA CIRUGÍA")
     
-    else:
-        st.error(mensaje)
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("CONFIRMAR ELIMINACIÓN"):
+            ok, mensaje = eliminar_cirugia_por_nombre(nombre_seleccionado, fecha_seleccionada)
 
-st.button("ATRÁS", on_click=marcar_staff)
+            if ok:
+                st.session_state.recargar_estado = True
+                st.session_state.pop("recursos_disponibles", None)
+                st.session_state.pop("agenda", None)
+                st.session_state.reset_surgery = True
+                
+                # Reset inmediato
+                st.session_state.confirmar_delete = False
+                
+                st.rerun()
+            else:
+                st.error(mensaje)
 
-
-if st.session_state.ir_a_staff:
-    st.session_state.ir_a_staff = False
-    st.switch_page("Pages/staff_access.py")
+    with col2:
+        if st.button("CANCELAR"):
+            st.session_state.confirmar_delete = False
+            st.rerun()

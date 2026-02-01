@@ -30,13 +30,13 @@
     "cirujanos": [
     {
       "id": "CIR-001",
-      "nombre": "Dr. Jeiser Fernández",
+      "nombre": "Jeiser Fernández",
       "especialidad": "Ortopedia"
     },
 
     {
       "id": "CIR-002",
-      "nombre": "Dra. Valeria Montes",
+      "nombre": "Valeria Montes",
       "especialidad": "Ortopedia"
     },
 
@@ -56,12 +56,12 @@
   "anestesiologos": [ 
     {
       "id": "ANE-001",
-      "nombre": "Dr. Ignacio Villar",
+      "nombre": "Ignacio Villar",
       "especialidad": "Anestesiólogo"
     },
     {
       "id": "ANE-002",
-      "nombre": "Dra. Sofía Delgado",
+      "nombre": "Sofía Delgado",
       "especialidad": "Anestesióloga"
     }
   ],

@@ -13,7 +13,7 @@ from resources_validation import (
 from utils import obtener_lunes_de_semana
 from visual import ocultar_sidebar
 ocultar_sidebar()
-
+from visual import validar_recursos_criticos
 
 # Reset general si se indicó
 
@@ -71,7 +71,7 @@ LIMITES_RECURSOS = {
     "Campos esteriles": 3,
     "Paños esteriles": 3,
     "Sabanas esteriles": 2,
-    "Suturas grapas": 4,
+    "Suturas y grapas": 4,
     "Contenedores esteriles": 1,
     "Sets ortopedicos": 1,
     "Sets de artroscopia": 1,
@@ -181,7 +181,7 @@ lunes_semana_cirugia = semana
 
 # Inputs de recursos
 
-st.subheader("RECURSOS PARA LA CIRUGÍA")
+st.subheader("RECURSOS A SOLICITAR")
 recursos_actuales = st.session_state.recursos_disponibles.get(lunes_semana_cirugia, inicializar_recursos())
 recursos_solicitados = {}
 
@@ -204,7 +204,7 @@ for recurso, stock in recursos_actuales.items():
         st.session_state[f"reset_{recurso}"] = False
 
     cantidad = st.number_input(
-        label=f"{recurso} (stock disponible: {stock}, máximo por cirugía: {max_por_cirugia})",
+        label=f"{recurso} (DISPONIBLE: {stock}, LÍMITE POR CIRUGÍA: {max_por_cirugia})",
         min_value=0,
         max_value=min(stock, max_por_cirugia),
         
@@ -223,36 +223,52 @@ for recurso, stock in recursos_actuales.items():
 
 
 
-# Validación temprana
+
 
 ok, errores, advertencias = validar_recursos(lunes_semana_cirugia, recursos_solicitados)
 if not ok:
-    st.error("No se puede programar la cirugía por falta de recursos:")
+    st.error("NO SE PUEDE PROGRAMAR LA CIRUGÍA POR FALTA DE RECURSOS:")
     for e in errores:
         st.error(f"❌ {e}")
     st.stop()
 
 q_data = None
 if not quirofanos_disponibles:
-    st.error("No hay quirófanos disponibles para esta fecha.")
+    st.error("NO HAY QUIRÓFANOS DISPONIBLES PARA ESTA FECHA.")
 
     sugerencia = sugerir_alternativa(st.session_state.quirofanos, fecha, None, None)
     if sugerencia:
         f, q, s = sugerencia
-        st.warning(f"Sugerencia:\n📅 Fecha: {f}\n🏥 Quirófano: {q}\n⏰ Sesión: {s}")
+        st.info(f"SUGERENCIA:\n📅 FECHA: {f}\n🏥 QUIRÓFANO: {q}\n⏰ SESIÓN: {s}")
     else:
-        st.error("No hay alternativas disponibles en los próximos 30 días.")
+        st.error("NO HAY ALTERNATIVAS DISPONIBLES EN LOS PRÓXIMOS 30 DÍAS")
     st.stop()
 else:
-    q_seleccionado = st.selectbox("Selecciona el quirófano", quirofanos_disponibles)
+    q_seleccionado = st.selectbox("SELECCCIONA EL QUIRÓFANO", quirofanos_disponibles)
     q_data = st.session_state.quirofanos[q_seleccionado]
     if validar_sesion(q_data, fecha, sesion):
-        st.success(f"Quirófano {q_seleccionado} disponible para la sesión {sesion}.")
+        st.success(f"QUIRÓFANO {q_seleccionado} DISPONIBLE PARA LA SESIÓN {sesion}.")
 
 nombre_cirugia = st.text_input("NOMBRE DEL PACIENTE (especificar quirófano)", max_chars=50)
 
+st.markdown("""
+<style>
+div.stButton > button {
+    width: 100%;
+    background-color: #0A6ED1;
+    color: white;
+    font-size: 18px;
+    height: 55px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+}
+div.stButton > button:hover {
+    background-color: #084C9E;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# Agendar cirugía
 
 if st.button("AGENDAR"):
 
@@ -265,30 +281,46 @@ if st.button("AGENDAR"):
         sugerencia = sugerir_alternativa(st.session_state.quirofanos, fecha, q_seleccionado, sesion)
         if sugerencia:
             f, q, s = sugerencia
-            st.warning(f"Sugerencia:\n📅 Fecha: {f}\n🏥 Quirófano: {q}\n⏰ Sesión: {s}")
+            st.info(f"SUGERENCIA:\n📅 FECHA: {f}\n🏥 QUIRÓFANO: {q}\n⏰ SESIÓN: {s}")
         else:
-            st.error("No hay alternativas disponibles para esta fecha.")
+            st.error("NO HAY ALTERNATIVAS DISPONIBLES PARA ESTA FECHA")
         st.stop()
 
-    for a in advertencias:
-        st.warning(a)
-
-    # Validar recursos de la semana correcta antes de descontar
+    
+    # VALIDAR RECURSOS NORMALES
+    
     ok, errores, advertencias = validar_recursos(lunes_semana_cirugia, recursos_solicitados)
     if not ok:
         for e in errores:
-            st.error(e)
+            st.error(f"❌ {e}")
         st.stop()
 
-# Descontar recursos de la semana actual
+    
+    # VALIDAR RECURSOS CRÍTICOS
+   
+    from visual import validar_recursos_criticos
+    stock_semana = st.session_state.recursos_disponibles[lunes_semana_cirugia]
+
+    ok_criticos, mensaje_critico = validar_recursos_criticos(
+        stock_semana,
+        recursos_solicitados
+    )
+
+    if not ok_criticos:
+        st.error(mensaje_critico)
+        st.stop()
+
+    
+    # MOSTRAR ADVERTENCIAS
+    
+    for a in advertencias:
+        st.warning(a)
+
+    
+    # DESCONTAR RECURSOS Y REGISTRAR CIRUGÍA
+    
     descontar_recursos(lunes_semana_cirugia, recursos_solicitados)
 
-# Actualizar stock visual en la sesión
-   
-    recursos_actuales = st.session_state.recursos_disponibles[lunes_semana_cirugia]
-    
-    # Registrar cirugía
-    
     registrar_cirugia(
         st.session_state.quirofanos,
         q_seleccionado,
@@ -298,20 +330,17 @@ if st.button("AGENDAR"):
         nombre_cirugia
     )
 
-    # Guardar json
-
     guardar_en_json(st.session_state.quirofanos)
     st.success("CIRUGÍA AGENDADA CORRECTAMENTE")
 
-    # Resetear inputs
+    # =======================
+    # RESET INPUTS
+    # =======================
+    recursos_actuales = st.session_state.recursos_disponibles[lunes_semana_cirugia]
     for r in recursos_actuales:
         st.session_state[f"reset_{r}"] = True
 
-        st.rerun()
-
-
-    # Actualizar stock visual
-    recursos_actuales = st.session_state.recursos_disponibles[lunes_semana_cirugia]
+    st.rerun()
 
 
 
