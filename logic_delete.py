@@ -3,6 +3,8 @@ import json
 from datetime import datetime, timedelta
 import os
 from resources_validation import devolver_recursos, lunes_de_la_semana
+from visual import ocultar_sidebar
+ocultar_sidebar()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
 RUTA_CIRUGIAS = os.path.join(BASE_DIR, "Pages", "cirugías.json")

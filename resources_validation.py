@@ -9,7 +9,7 @@ from datetime import date, timedelta
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 RUTA_RECURSOS_JSON = os.path.join(BASE_DIR, "APP", "recursos.json")
 
-# Umbral de advertencia (2/3)
+# Advertencia (2/3)
 UMBRAL_ADVERTENCIA = 2 / 3
 
 

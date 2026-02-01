@@ -4,6 +4,8 @@ from logic_delete import eliminar_cirugia_por_nombre
 import os
 from datetime import date, datetime
 import json
+from visual import ocultar_sidebar
+ocultar_sidebar()
 
 def eliminar_cirugias_pasadas():
    

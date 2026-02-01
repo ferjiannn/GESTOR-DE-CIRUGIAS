@@ -11,6 +11,8 @@ from resources_validation import (
     lunes_de_la_semana
 )
 from utils import obtener_lunes_de_semana
+from visual import ocultar_sidebar
+ocultar_sidebar()
 
 
 # Reset general si se indicó
@@ -27,7 +29,7 @@ if "recursos_disponibles" not in st.session_state:
     st.session_state.recursos_disponibles = {}
 
 
-# JSON de quirófanos
+# json de quirófanos
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 RUTA_JSON = os.path.join(BASE_DIR, "cirugías.json")
@@ -51,7 +53,7 @@ def cargar_desde_json():
     return inicializar_quirofanos()
 
 
-# Constantes
+# limites
 
 MAX_CIRUGIAS_POR_DIA = 2
 SESIONES = ["Mañana (8:00)", "Tarde (14:00)"]
@@ -184,13 +186,15 @@ recursos_actuales = st.session_state.recursos_disponibles.get(lunes_semana_cirug
 recursos_solicitados = {}
 
 # Inicializar valores en session_state
+
 for r in recursos_actuales:
     if f"input_{r}" not in st.session_state:
         st.session_state[f"input_{r}"] = 0
     if f"reset_{r}" not in st.session_state:
         st.session_state[f"reset_{r}"] = False
 
-# Crear number_input respetando session_state y mostrando stock correcto
+# Crear number_input mostrando stock correcto
+
 for recurso, stock in recursos_actuales.items():
     max_por_cirugia = LIMITES_RECURSOS.get(recurso, stock)
     valor_inicial = 0 if st.session_state[f"reset_{recurso}"] else st.session_state[f"input_{recurso}"]
@@ -213,6 +217,7 @@ for recurso, stock in recursos_actuales.items():
         recursos_solicitados[recurso] = cantidad
 
     # Desmarcar reset
+    
     if st.session_state[f"reset_{recurso}"]:
         st.session_state[f"reset_{recurso}"] = False
 
@@ -268,7 +273,6 @@ if st.button("AGENDAR"):
     for a in advertencias:
         st.warning(a)
 
-    # Descontar recursos
     # Validar recursos de la semana correcta antes de descontar
     ok, errores, advertencias = validar_recursos(lunes_semana_cirugia, recursos_solicitados)
     if not ok:
@@ -280,8 +284,11 @@ if st.button("AGENDAR"):
     descontar_recursos(lunes_semana_cirugia, recursos_solicitados)
 
 # Actualizar stock visual en la sesión
+   
     recursos_actuales = st.session_state.recursos_disponibles[lunes_semana_cirugia]
+    
     # Registrar cirugía
+    
     registrar_cirugia(
         st.session_state.quirofanos,
         q_seleccionado,
@@ -291,7 +298,8 @@ if st.button("AGENDAR"):
         nombre_cirugia
     )
 
-    # Guardar JSON
+    # Guardar json
+
     guardar_en_json(st.session_state.quirofanos)
     st.success("CIRUGÍA AGENDADA CORRECTAMENTE")
 

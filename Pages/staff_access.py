@@ -1,7 +1,9 @@
 import streamlit as st
 import json
+from visual import ocultar_sidebar
+ocultar_sidebar()
 
-st.markdown("# STAFF ACCESS")
+st.markdown("# INGRESE SUS DATOS")
 
 
 # Session state
@@ -34,6 +36,7 @@ input_id = st.text_input("IDENTIFICACIÓN")
 if st.button("ACCEDER"):
 
     # Validación de campos vacíos
+   
     if not input_name.strip() or not input_id.strip():
         st.error("DEBE INGRESAR LOS DATOS REQUERIDOS")
         st.stop()

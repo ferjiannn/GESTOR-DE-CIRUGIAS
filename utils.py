@@ -1,6 +1,8 @@
 import json
 import os
 from datetime import timedelta
+from visual import ocultar_sidebar
+ocultar_sidebar()
 
 def obtener_lunes_de_semana(fecha):
     return fecha - timedelta(days=fecha.weekday())
@@ -10,11 +12,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 RUTA_CIRUGIAS_JSON = os.path.join(BASE_DIR, "Pages/cirugías.json")
 
 def obtener_cirugias_programadas():
-    """
-    Devuelve una lista plana de todas las cirugías programadas.
-    Cada elemento es un diccionario con:
-    nombre, fecha, sesion, quirófano y recursos
-    """
 
     if not os.path.exists(RUTA_CIRUGIAS_JSON):
         return []
@@ -38,11 +35,6 @@ def obtener_cirugias_programadas():
     return cirugias
 
 def obtener_cirugias_por_fecha():
-    """
-    Devuelve un diccionario agrupado por fecha.
-    Cada clave es una fecha y el valor es la lista de cirugías de ese día.
-    Útil para crear selectboxes por fecha en delete_surgery.py
-    """
 
     cirugias = obtener_cirugias_programadas()
     cirugias_por_fecha = {}
