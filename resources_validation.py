@@ -15,23 +15,21 @@ UMBRAL_ADVERTENCIA = 2 / 3
 
 # Carga de recursos.json
 
-def cargar_recursos_operativos():
+def cargar_recursos_operativos(semana= None):
     if not os.path.exists(RUTA_RECURSOS_JSON):
         raise FileNotFoundError(f"No se encontró {RUTA_RECURSOS_JSON}")
     with open(RUTA_RECURSOS_JSON, "r", encoding="utf-8") as f:
         data = json.load(f)
-    return data.get("recursos_operativos", {})
 
+    recursos = data.get("recursos_operativos", {})
+
+    return {k: v["stock_semanal"] for k, v in recursos.items()}
 
 # Inicializar recursos
 
 def inicializar_recursos():
     recursos = cargar_recursos_operativos()
-    return {k: v["stock_semanal"] for k, v in recursos.items()}
-
-if "stock_maximo" not in st.session_state:
-    recursos_json = cargar_recursos_operativos()
-    st.session_state.stock_maximo = {r: v["stock_semanal"] for r, v in recursos_json.items()}
+    return recursos.copy()
 
 
 # Obtener lunes de la semana
@@ -84,15 +82,27 @@ def descontar_recursos(fecha_cirugia: date, recursos_solicitados=None):
                 stock_actual[recurso] = 0
 
     # Registrar consumo en JSON (solo histórico)
-    recursos_json = cargar_recursos_operativos()
+    with open(RUTA_RECURSOS_JSON, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    recursos_json = data.get("recursos_operativos", {})
+
     for recurso, cantidad in recursos.items():
         if recurso in recursos_json:
             fecha_str = str(semana)
+
+            if "consumo_semanal" not in recursos_json[recurso]:
+                recursos_json[recurso]["consumo_semanal"] = {}
+
             recursos_json[recurso]["consumo_semanal"][fecha_str] = (
                 recursos_json[recurso]["consumo_semanal"].get(fecha_str, 0) + cantidad
             )
 
-    # Guardar JSON
+# Guardar JSON completo
+    with open(RUTA_RECURSOS_JSON, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+    
+        # Guardar JSON
     with open(RUTA_RECURSOS_JSON, "w", encoding="utf-8") as f:
         json.dump({"recursos_operativos": recursos_json}, f, ensure_ascii=False, indent=4)
 

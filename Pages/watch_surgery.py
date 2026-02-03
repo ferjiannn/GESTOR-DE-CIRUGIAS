@@ -119,9 +119,6 @@ else:
 
             if ok:
                 st.session_state.recargar_estado = True
-                st.session_state.pop("recursos_disponibles", None)
-                st.session_state.pop("agenda", None)
-                st.session_state.reset_surgery = True
                 
                 # Reset inmediato
                 st.session_state.confirmar_delete = False

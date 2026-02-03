@@ -15,13 +15,21 @@ from visual import ocultar_sidebar
 ocultar_sidebar()
 from visual import validar_recursos_criticos
 
+# INICIALIZACION GLOBAL
+
+
+if "stock_maximo" not in st.session_state:
+    recursos_json = cargar_recursos_operativos()
+    st.session_state.stock_maximo =recursos_json.copy()
+
+if "recursos_disponibles" not in st.session_state:
+    st.session_state.recursos_disponibles = {}
 # Reset general si se indicó
 
 if st.session_state.get("reset_surgery", False):
     for key in ["recursos_disponibles", "agenda", "quirófanos_disponibles", "sesiones_disponibles"]:
         st.session_state.pop(key, None)
-    st.session_state.reset_surgery = False
-
+   
 
 # Inicialización de recursos
 
@@ -154,10 +162,10 @@ if "quirofanos" not in st.session_state:
 
 if "recargar_estado" not in st.session_state:
     st.session_state.recargar_estado = False
+
 if st.session_state.recargar_estado:
     st.session_state.quirofanos = cargar_desde_json()
     st.session_state.recargar_estado = False
-
 
 # Principal
 
@@ -170,7 +178,7 @@ semana = fecha - timedelta(days=fecha.weekday())
 
 # Inicializar recursos por semana
 if semana not in st.session_state.recursos_disponibles:
-    st.session_state.recursos_disponibles[semana] = inicializar_recursos()
+    st.session_state.recursos_disponibles[semana] = cargar_recursos_operativos(semana)
 
 quirofanos_disponibles = list(st.session_state.quirofanos.keys())
 sesion = st.radio("SELECCIONA LA SESIÓN", SESIONES)
@@ -179,52 +187,44 @@ sesion = st.radio("SELECCIONA LA SESIÓN", SESIONES)
 lunes_semana_cirugia = semana
 
 
-# Inputs de recursos
-
+# ==========================
+# INPUTS DE RECURSOS
+# ==========================
 st.subheader("RECURSOS A SOLICITAR")
 recursos_actuales = st.session_state.recursos_disponibles.get(lunes_semana_cirugia, inicializar_recursos())
 recursos_solicitados = {}
 
-# Inicializar valores en session_state
-
-for r in recursos_actuales:
-    if f"input_{r}" not in st.session_state:
-        st.session_state[f"input_{r}"] = 0
-    if f"reset_{r}" not in st.session_state:
-        st.session_state[f"reset_{r}"] = False
-
-# Crear number_input mostrando stock correcto
-
 for recurso, stock in recursos_actuales.items():
-    max_por_cirugia = LIMITES_RECURSOS.get(recurso, stock)
-    valor_inicial = 0 if st.session_state[f"reset_{recurso}"] else st.session_state[f"input_{recurso}"]
-
-    if st.session_state.get(f"reset_{recurso}", False):
+    # Inicializar session_state si no existe
+    if f"input_{recurso}" not in st.session_state:
         st.session_state[f"input_{recurso}"] = 0
+    if f"reset_{recurso}" not in st.session_state:
         st.session_state[f"reset_{recurso}"] = False
 
+    max_por_cirugia = LIMITES_RECURSOS.get(recurso, stock)
+    max_permitido = min(stock, max_por_cirugia)
+
+    # Blindaje: que el valor nunca exceda el máximo permitido
+    if st.session_state[f"input_{recurso}"] > max_permitido:
+        st.session_state[f"input_{recurso}"] = max_permitido
+
+    # Crear número input con key única
     cantidad = st.number_input(
         label=f"{recurso} (DISPONIBLE: {stock}, LÍMITE POR CIRUGÍA: {max_por_cirugia})",
         min_value=0,
-        max_value=min(stock, max_por_cirugia),
-        
+        max_value=max_permitido,
         value=st.session_state[f"input_{recurso}"],
         step=1,
         key=f"input_{recurso}"
     )
 
-    if cantidad > 0:
-        recursos_solicitados[recurso] = cantidad
+    recursos_solicitados[recurso] = cantidad
 
-    # Desmarcar reset
-    
+    # Resetear si corresponde
     if st.session_state[f"reset_{recurso}"]:
         st.session_state[f"reset_{recurso}"] = False
 
-
-
-
-
+    
 ok, errores, advertencias = validar_recursos(lunes_semana_cirugia, recursos_solicitados)
 if not ok:
     st.error("NO SE PUEDE PROGRAMAR LA CIRUGÍA POR FALTA DE RECURSOS:")
@@ -286,18 +286,14 @@ if st.button("AGENDAR"):
             st.error("NO HAY ALTERNATIVAS DISPONIBLES PARA ESTA FECHA")
         st.stop()
 
-    
     # VALIDAR RECURSOS NORMALES
-    
     ok, errores, advertencias = validar_recursos(lunes_semana_cirugia, recursos_solicitados)
     if not ok:
         for e in errores:
             st.error(f"❌ {e}")
         st.stop()
 
-    
     # VALIDAR RECURSOS CRÍTICOS
-   
     from visual import validar_recursos_criticos
     stock_semana = st.session_state.recursos_disponibles[lunes_semana_cirugia]
 
@@ -310,15 +306,11 @@ if st.button("AGENDAR"):
         st.error(mensaje_critico)
         st.stop()
 
-    
     # MOSTRAR ADVERTENCIAS
-    
     for a in advertencias:
         st.warning(a)
 
-    
     # DESCONTAR RECURSOS Y REGISTRAR CIRUGÍA
-    
     descontar_recursos(lunes_semana_cirugia, recursos_solicitados)
 
     registrar_cirugia(
@@ -331,18 +323,22 @@ if st.button("AGENDAR"):
     )
 
     guardar_en_json(st.session_state.quirofanos)
-    st.success("CIRUGÍA AGENDADA CORRECTAMENTE")
 
-    # =======================
-    # RESET INPUTS
-    # =======================
+    # bandera para exito
+    st.session_state.cirugia_exitosa = True  
+
+    # RESET de los inputs de recursos
     recursos_actuales = st.session_state.recursos_disponibles[lunes_semana_cirugia]
     for r in recursos_actuales:
         st.session_state[f"reset_{r}"] = True
 
-    st.rerun()
 
+# MOSTRAR SUCCESS SI HUBO AGENDAMIENTO
 
+if st.session_state.get("cirugia_exitosa"):
+    st.success("CIRUGÍA AGENDADA CORRECTAMENTE")
+    st.session_state.cirugia_exitosa = False
+   
 
 # Botones de navegación
 
