@@ -93,9 +93,6 @@ Si una cirugía consume una cantidad específica de recursos, estos quedan bloqu
 
 ---
 
-Cabe aclarar que, por alguna razón que desconozco, en ocasiones en la página de staff_access, luego de ingresar los datos solicitados, es necesario pulsar 2 veces el botón de AGENDAR CIRUGIA para acceder a la página, contratiempo que no afecta en absoluto la funcionalidad del proyecto y es quizás un problema de la propia interfaz de streamlit.
-
-
 Este proyecto fue desarrollado como simulación académica de un sistema de gestión hospitalaria enfocado en ortopedia, integrando validaciones lógicas, manejo de archivos JSON y control estructurado de recursos.
 
 
