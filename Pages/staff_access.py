@@ -1,6 +1,6 @@
 import streamlit as st
 import json
-from visual import ocultar_sidebar
+from auxiliar_functions import ocultar_sidebar
 ocultar_sidebar()
 
 st.markdown("# INGRESE SUS DATOS")

@@ -15,19 +15,40 @@ UMBRAL_ADVERTENCIA = 2 / 3
 
 # Carga de recursos.json
 
-def cargar_recursos_operativos(semana= None):
+def cargar_recursos_operativos(semana=None):
     if not os.path.exists(RUTA_RECURSOS_JSON):
         raise FileNotFoundError(f"No se encontró {RUTA_RECURSOS_JSON}")
+
     with open(RUTA_RECURSOS_JSON, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     recursos = data.get("recursos_operativos", {})
+    resultado = {}
 
-    return {k: v["stock_semanal"] for k, v in recursos.items()}
+    if semana:
+        semana_str = str(semana)
+
+    for nombre, info in recursos.items():
+        stock_base = info.get("stock_semanal", 0)
+
+        if semana:
+            consumo = info.get("consumo_semanal", {}).get(semana_str, 0)
+            stock_real = stock_base - consumo
+
+            # 🔒 Blindaje absoluto
+            if stock_real < 0:
+                stock_real = 0
+
+            resultado[nombre] = stock_real
+        else:
+            resultado[nombre] = stock_base
+
+    return resultado
 
 # Inicializar recursos
 
-def inicializar_recursos():
+def inicializar_recursos(semana= None):
+    return cargar_recursos_operativos(semana)
     recursos = cargar_recursos_operativos()
     return recursos.copy()
 
@@ -68,8 +89,10 @@ def validar_recursos(fecha_cirugia: date, recursos_solicitados=None):
 def descontar_recursos(fecha_cirugia: date, recursos_solicitados=None):
     
     semana = lunes_de_la_semana(fecha_cirugia)
+   
     if semana not in st.session_state.recursos_disponibles:
-        st.session_state.recursos_disponibles[semana] = inicializar_recursos()
+        st.session_state.recursos_disponibles[semana] = cargar_recursos_operativos(semana)
+
     stock_actual = st.session_state.recursos_disponibles[semana]
 
     recursos = recursos_solicitados or {}
@@ -141,6 +164,30 @@ def devolver_recursos(fecha_cirugia: date, recursos_utilizados: dict):
 
     # Guardar nuevamente en session_state
     st.session_state.recursos_disponibles[semana] = stock_actual
+
+    # CORREGIR consumo_semanal EN JSON
+    with open(RUTA_RECURSOS_JSON, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    recursos_json = data.get("recursos_operativos", {})
+    fecha_str = str(semana)
+
+    for recurso, cantidad in recursos_utilizados.items():
+        if recurso in recursos_json:
+            consumo = recursos_json[recurso].get("consumo_semanal", {})
+
+            if fecha_str in consumo:
+                consumo[fecha_str] -= cantidad
+
+                # Si baja a 0 o menos, eliminar la entrada
+                if consumo[fecha_str] <= 0:
+                    del consumo[fecha_str]
+
+                recursos_json[recurso]["consumo_semanal"] = consumo
+
+    # Guardar JSON actualizado
+    with open(RUTA_RECURSOS_JSON, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
 
 # Reset semanal si es lunes

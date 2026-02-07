@@ -4,7 +4,7 @@ from logic_delete import eliminar_cirugia_por_nombre
 import os
 from datetime import date, datetime
 import json
-from visual import ocultar_sidebar
+from auxiliar_functions import ocultar_sidebar
 ocultar_sidebar()
 
 st.markdown("""
@@ -131,3 +131,8 @@ else:
         if st.button("CANCELAR"):
             st.session_state.confirmar_delete = False
             st.rerun()
+
+st.divider()
+
+if st.button("ATRÁS"):
+    st.switch_page("Pages/staff_access.py")

@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import timedelta
-from visual import ocultar_sidebar
+from auxiliar_functions import ocultar_sidebar
 ocultar_sidebar()
 
 def obtener_lunes_de_semana(fecha):

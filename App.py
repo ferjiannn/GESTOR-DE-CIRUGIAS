@@ -2,7 +2,7 @@ import streamlit as st
 import json
 from PIL import Image
 import os
-from visual import ocultar_sidebar
+from auxiliar_functions import ocultar_sidebar
 
 ocultar_sidebar()
 

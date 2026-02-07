@@ -3,155 +3,87 @@
         "Antibioticos": {
             "stock_semanal": 15,
             "max_por_cirugia": 3,
-            "consumo_semanal": {
-                "2026-02-02": 30,
-                "2026-02-09": 9,
-                "2026-02-16": 3
-            }
+            "consumo_semanal": {}
         },
         "Anestesicos": {
             "stock_semanal": 13,
             "max_por_cirugia": 1,
-            "consumo_semanal": {
-                "2026-02-02": 14,
-                "2026-02-09": 3,
-                "2026-02-16": 1
-            }
+            "consumo_semanal": {}
         },
         "Analgesicos": {
             "stock_semanal": 19,
             "max_por_cirugia": 2,
-            "consumo_semanal": {
-                "2026-02-02": 32,
-                "2026-02-09": 15,
-                "2026-02-16": 5
-            }
+            "consumo_semanal": {}
         },
         "Antiinflamatorios": {
             "stock_semanal": 20,
             "max_por_cirugia": 2,
-            "consumo_semanal": {
-                "2026-02-02": 14,
-                "2026-02-09": 6,
-                "2026-02-16": 2
-            }
+            "consumo_semanal": {}
         },
         "Anticoagulantes": {
             "stock_semanal": 12,
             "max_por_cirugia": 1,
-            "consumo_semanal": {
-                "2026-02-02": 6,
-                "2026-02-09": 3,
-                "2026-02-16": 1
-            }
+            "consumo_semanal": {}
         },
         "Antiemeticos": {
             "stock_semanal": 10,
             "max_por_cirugia": 1,
-            "consumo_semanal": {
-                "2026-02-02": 6,
-                "2026-02-09": 3,
-                "2026-02-16": 1
-            }
+            "consumo_semanal": {}
         },
         "Relajantes musculares": {
             "stock_semanal": 6,
             "max_por_cirugia": 1,
-            "consumo_semanal": {
-                "2026-02-02": 6,
-                "2026-02-09": 3,
-                "2026-02-16": 1
-            }
+            "consumo_semanal": {}
         },
         "Soluciones intravenosas": {
             "stock_semanal": 18,
             "max_por_cirugia": 2,
-            "consumo_semanal": {
-                "2026-02-02": 11,
-                "2026-02-09": 6,
-                "2026-02-16": 2
-            }
+            "consumo_semanal": {}
         },
         "Medicacion de soporte": {
             "stock_semanal": 20,
             "max_por_cirugia": 2,
-            "consumo_semanal": {
-                "2026-02-02": 11,
-                "2026-02-09": 6,
-                "2026-02-16": 2
-            }
+            "consumo_semanal": {}
         },
         "Campos esteriles": {
             "stock_semanal": 25,
             "max_por_cirugia": 3,
-            "consumo_semanal": {
-                "2026-02-02": 16,
-                "2026-02-09": 9,
-                "2026-02-16": 3
-            }
+            "consumo_semanal": {}
         },
         "Paños esteriles": {
             "stock_semanal": 25,
             "max_por_cirugia": 3,
-            "consumo_semanal": {
-                "2026-02-02": 17,
-                "2026-02-09": 9,
-                "2026-02-16": 3
-            }
+            "consumo_semanal": {}
         },
         "Sabanas esteriles": {
             "stock_semanal": 20,
             "max_por_cirugia": 2,
-            "consumo_semanal": {
-                "2026-02-02": 13,
-                "2026-02-09": 6,
-                "2026-02-16": 2
-            }
+            "consumo_semanal": {}
         },
         "Suturas y grapas": {
             "stock_semanal": 30,
             "max_por_cirugia": 4,
-            "consumo_semanal": {
-                "2026-02-02": 23,
-                "2026-02-09": 12,
-                "2026-02-16": 4
-            }
+            "consumo_semanal": {}
         },
         "Contenedores esteriles": {
             "stock_semanal": 4,
             "max_por_cirugia": 1,
-            "consumo_semanal": {
-                "2026-02-02": 9,
-                "2026-02-09": 3,
-                "2026-02-16": 1
-            }
+            "consumo_semanal": {}
         },
         "Sets ortopedicos": {
             "stock_semanal": 8,
             "max_por_cirugia": 1,
-            "consumo_semanal": {
-                "2026-02-02": 13,
-                "2026-02-09": 3,
-                "2026-02-16": 1
-            }
+            "consumo_semanal": {}
         },
         "Sets de artroscopia": {
             "stock_semanal": 3,
             "max_por_cirugia": 1,
-            "consumo_semanal": {
-                "2026-02-02": 7,
-                "2026-02-09": 3,
-                "2026-02-16": 1
-            }
+            "consumo_semanal": {}
         },
         "Implantes ortopedicos": {
             "stock_semanal": 14,
             "max_por_cirugia": 2,
-            "consumo_semanal": {
-                "2026-02-02": 10,
-                "2026-02-09": 6,
-                "2026-02-16": 2
-            }
+            "consumo_semanal": {}
         }
     }
 }

@@ -11,9 +11,9 @@ from resources_validation import (
     lunes_de_la_semana
 )
 from utils import obtener_lunes_de_semana
-from visual import ocultar_sidebar
+from auxiliar_functions import ocultar_sidebar
 ocultar_sidebar()
-from visual import validar_recursos_criticos
+from auxiliar_functions import validar_recursos_criticos
 
 # INICIALIZACION GLOBAL
 
@@ -272,29 +272,41 @@ div.stButton > button:hover {
 
 if st.button("AGENDAR"):
 
+    puede_agendar = True
+
     if not nombre_cirugia.strip():
         st.error("DEBE INTRODUCIR EL NOMBRE DEL PACIENTE")
-        st.stop()
+        puede_agendar = False
 
     if not validar_sesion(q_data, fecha, sesion):
         st.error("NO DISPONIBLE")
-        sugerencia = sugerir_alternativa(st.session_state.quirofanos, fecha, q_seleccionado, sesion)
+        sugerencia = sugerir_alternativa(
+            st.session_state.quirofanos,
+            fecha,
+            q_seleccionado,
+            sesion
+        )
         if sugerencia:
             f, q, s = sugerencia
-            st.info(f"SUGERENCIA:\n📅 FECHA: {f}\n🏥 QUIRÓFANO: {q}\n⏰ SESIÓN: {s}")
+            st.info(f"SUGERENCIA:\n📅 FECHA: {f}\n🏥 QUIROFANO: {q}\n⏰ SESION: {s}")
         else:
             st.error("NO HAY ALTERNATIVAS DISPONIBLES PARA ESTA FECHA")
-        st.stop()
+        puede_agendar = False
 
     # VALIDAR RECURSOS NORMALES
-    ok, errores, advertencias = validar_recursos(lunes_semana_cirugia, recursos_solicitados)
+    ok, errores, advertencias = validar_recursos(
+        lunes_semana_cirugia,
+        recursos_solicitados
+    )
+
     if not ok:
         for e in errores:
-            st.error(f"❌ {e}")
-        st.stop()
+            st.error(e)
+        puede_agendar = False
 
-    # VALIDAR RECURSOS CRÍTICOS
-    from visual import validar_recursos_criticos
+    # VALIDAR RECURSOS CRITICOS
+    from auxiliar_functions import validar_recursos_criticos
+
     stock_semana = st.session_state.recursos_disponibles[lunes_semana_cirugia]
 
     ok_criticos, mensaje_critico = validar_recursos_criticos(
@@ -304,39 +316,41 @@ if st.button("AGENDAR"):
 
     if not ok_criticos:
         st.error(mensaje_critico)
-        st.stop()
+        puede_agendar = False
 
-    # MOSTRAR ADVERTENCIAS
-    for a in advertencias:
-        st.warning(a)
+    # SOLO SI TODO ES CORRECTO
+    if puede_agendar:
 
-    # DESCONTAR RECURSOS Y REGISTRAR CIRUGÍA
-    descontar_recursos(lunes_semana_cirugia, recursos_solicitados)
+        for a in advertencias:
+            st.warning(a)
 
-    registrar_cirugia(
-        st.session_state.quirofanos,
-        q_seleccionado,
-        fecha,
-        sesion,
-        recursos_solicitados,
-        nombre_cirugia
-    )
+        descontar_recursos(
+            lunes_semana_cirugia,
+            recursos_solicitados
+        )
 
-    guardar_en_json(st.session_state.quirofanos)
+        registrar_cirugia(
+            st.session_state.quirofanos,
+            q_seleccionado,
+            fecha,
+            sesion,
+            recursos_solicitados,
+            nombre_cirugia
+        )
 
-    # bandera para exito
-    st.session_state.cirugia_exitosa = True  
+        guardar_en_json(st.session_state.quirofanos)
 
-    # RESET de los inputs de recursos
-    recursos_actuales = st.session_state.recursos_disponibles[lunes_semana_cirugia]
-    for r in recursos_actuales:
-        st.session_state[f"reset_{r}"] = True
+        st.session_state.cirugia_exitosa = True
+
+        # RESET de los inputs de recursos
+        recursos_actuales = st.session_state.recursos_disponibles[lunes_semana_cirugia]
+        for r in recursos_actuales:
+            st.session_state[f"reset_{r}"] = True
 
 
 # MOSTRAR SUCCESS SI HUBO AGENDAMIENTO
-
 if st.session_state.get("cirugia_exitosa"):
-    st.success("CIRUGÍA AGENDADA CORRECTAMENTE")
+    st.success("CIRUGIA AGENDADA CORRECTAMENTE")
     st.session_state.cirugia_exitosa = False
    
 
