@@ -7,8 +7,10 @@ from auxiliar_functions import ocultar_sidebar
 ocultar_sidebar()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  
-RUTA_CIRUGIAS = os.path.join(BASE_DIR, "Pages", "cirugías.json")
-RUTA_RECURSOS = "APP/recursos.json"
+
+RUTA_CIRUGIAS = os.path.join(BASE_DIR, "cirugías.json")
+
+RUTA_RECURSOS = os.path.join(BASE_DIR, "..", "APP", "recursos.json")
 
 
 def obtener_lunes(fecha_str):

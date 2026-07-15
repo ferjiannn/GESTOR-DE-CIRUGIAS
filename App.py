@@ -4,6 +4,8 @@ from PIL import Image
 import os
 from auxiliar_functions import ocultar_sidebar
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 ocultar_sidebar()
 
 st.set_page_config(
@@ -35,7 +37,7 @@ div.stButton > button:hover {
 
 # LOGO
 
-logo_path = os.path.join("APP", "logo.png")
+logo_path = os.path.join(BASE_DIR,"APP", "logo.png")
 
 st.write("")
 st.write("")
@@ -70,10 +72,10 @@ st.divider()
 
 # CONTRASEÑA
 
-with open("APP/data.json", "r") as Data:
+with open(os.path.join(BASE_DIR, "APP", "data.json"), "r") as Data:
     appdata = json.load(Data)
 
-with open("APP/password.json", "r") as confidential:
+with open(os.path.join(BASE_DIR, "APP", "password.json"), "r") as confidential:
     data = json.load(confidential)
     real_password = data["password"]
 

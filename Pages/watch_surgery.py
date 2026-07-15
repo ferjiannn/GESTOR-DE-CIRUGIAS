@@ -1,10 +1,15 @@
 import streamlit as st
 from utils import obtener_cirugias_por_fecha
 from logic_delete import eliminar_cirugia_por_nombre
+import sys
 import os
 from datetime import date, datetime
 import json
 from auxiliar_functions import ocultar_sidebar
+
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 ocultar_sidebar()
 
 st.markdown("""
@@ -27,8 +32,10 @@ div.stButton > button:hover {
 
 def eliminar_cirugias_pasadas():
    
+ 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    RUTA_CIRUGIAS = os.path.join(BASE_DIR, "Pages", "cirugías.json")
+  
+    RUTA_CIRUGIAS = os.path.join(BASE_DIR, "cirugías.json")
 
     if not os.path.exists(RUTA_CIRUGIAS):
         return 0  # No hay cirugías que procesar

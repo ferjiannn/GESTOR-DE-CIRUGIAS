@@ -1,6 +1,10 @@
 import streamlit as st
 import json
+import os
 from auxiliar_functions import ocultar_sidebar
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 ocultar_sidebar()
 
 st.markdown("# INGRESE SUS DATOS")
@@ -14,8 +18,11 @@ if "acceso" not in st.session_state:
 
 # Cargar staff desde data.json
 
-with open("APP/data.json", "r", encoding="utf-8") as Data:
+# Cargar staff desde data.json utilizando la ruta dinámica correcta
+
+with open(os.path.join(BASE_DIR, "APP", "data.json"), "r", encoding="utf-8") as Data:
     appdata = json.load(Data)
+
 
 staff = appdata.get("staff", {})
 staff_list = []

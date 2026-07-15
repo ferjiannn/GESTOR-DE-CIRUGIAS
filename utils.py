@@ -9,7 +9,8 @@ def obtener_lunes_de_semana(fecha):
 
 # Ruta a cirugías.json
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RUTA_CIRUGIAS_JSON = os.path.join(BASE_DIR, "Pages/cirugías.json")
+
+RUTA_CIRUGIAS_JSON = os.path.join(BASE_DIR, "cirugías.json")
 
 def obtener_cirugias_programadas():
 
