@@ -89,6 +89,6 @@ st.write("")
 
 if st.button("ACCEDER"):
     if input_password == real_password:
-        st.switch_page("Pages/staff_access.py")
+        st.switch_page("pages/staff_access.py")
     else:
         st.error("ACCESO DENEGADO")

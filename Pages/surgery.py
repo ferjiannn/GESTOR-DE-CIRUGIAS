@@ -375,8 +375,8 @@ with col2:
 
 if st.session_state.ir_a_delete:
     st.session_state.ir_a_delete = False
-    st.switch_page("Pages/watch_surgery.py")
+    st.switch_page("pages/watch_surgery.py")
 
 if st.session_state.ir_a_staff:
     st.session_state.ir_a_staff = False
-    st.switch_page("Pages/staff_access.py")
+    st.switch_page("pages/staff_access.py")

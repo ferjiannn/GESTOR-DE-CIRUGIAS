@@ -142,4 +142,4 @@ else:
 st.divider()
 
 if st.button("ATRÁS"):
-    st.switch_page("Pages/staff_access.py")
+    st.switch_page("pages/staff_access.py")
